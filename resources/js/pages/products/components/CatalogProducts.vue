@@ -16,7 +16,7 @@ const props = defineProps({
 
     <li class="catalog-element" v-for="product in props.products">
         <a class="link-prod">
-            <img src="/images/Battlefield6.jpg" alt="Картинка">
+            <img :src="product.imageURL" alt="Картинка">
         </a>
         <p class="name-game">{{ product.title }}</p>
         <div class="priceAndBuy">
