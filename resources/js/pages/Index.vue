@@ -1,7 +1,7 @@
 <script setup>
 import HeadComp from './components/HeadComp.vue'
-import Filters from './components/Filters.vue'
-import Catalog from './components/CatalogProducts.vue'
+import Filters from './productsComponents/Filters.vue'
+import Catalog from './productsComponents/CatalogProducts.vue'
 import {Head, Link} from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -14,7 +14,7 @@ const props = defineProps({
 
 <div class="wrapper">  
 
-    <Head title="Welcome" />
+    <Head title="Главная страница" />
 
     <HeadComp />
 

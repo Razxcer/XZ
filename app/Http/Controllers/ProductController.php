@@ -13,7 +13,7 @@ class ProductController extends Controller
     {
         $products = Product::all();
         
-        return Inertia::render('products/Index',[
+        return Inertia::render('Index',[
             'products' => $products
         ]);
     }
