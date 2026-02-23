@@ -4,9 +4,9 @@ import Filters from './productsComponents/Filters.vue'
 import Catalog from './productsComponents/CatalogProducts.vue'
 import {Head, Link} from '@inertiajs/vue3';
 
-const props = defineProps({
-        products:Array
-    });
+  const props = defineProps({
+    products:Array,
+  });
 
 </script>
 

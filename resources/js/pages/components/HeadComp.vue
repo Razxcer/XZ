@@ -1,13 +1,39 @@
 <script setup>
-import { ref } from 'vue';
-import { defineProps } from 'vue';
-import LogInModal from './LogInModal.vue';
+    import { onMounted, defineProps, ref, watch } from 'vue';
+    import LogInModal from './LogInModal.vue';
+    import { computed } from 'vue';
+    import { usePage, Link } from '@inertiajs/vue3';
+    import { useUserStore } from '../../stores/user';
 
-const modalAuthIsActive = ref(false)
+    const error = ref(null)
 
-const profileClick=()=>{
-    modalAuthIsActive.value=!modalAuthIsActive.value
-}
+    //Pinia user.js
+    const userStore = useUserStore();
+    const userName = ref(userStore.userData);
+
+    const props = defineProps({
+        activeError: String
+    })
+
+    console.log(props.activeError)
+    watch(props.activeError, ()=>{
+        if(props.activeError){
+            error.value = props.activeError
+            modalAuthIsActive.value = true
+        }
+    })
+
+    //Кнопка вход
+    const modalAuthIsActive = ref(false)
+    const profileClick=()=>{
+        modalAuthIsActive.value=!modalAuthIsActive.value
+    }
+
+    //Кнопка выход
+    const quit = ()=>{
+        userStore.setUser(null);
+    }
+
 
 
 
@@ -17,9 +43,9 @@ const profileClick=()=>{
     <div class="head">
 
         <div class="logo-panel">
-            <a href="/" class="logo-link">
+            <Link href="/" class="logo-link">
                 <div class="logo">XZ</div>
-            </a>
+            </Link>
         </div>
 
         <div class="search-panel">
@@ -28,46 +54,54 @@ const profileClick=()=>{
 
         <div class="head-icons-panel">
             <div class="head-icon favorites">
-                <a href=""> 
+                <Link href="/favorites"> 
                     <button class="head-button" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                         </svg>
                         <p>Избранное</p>
                     </button>
-                </a>
+                </Link>
             </div>
 
             <div class="head-icon basket">
-                <a href=""> 
+                <Link href="/basket"> 
                     <button class="head-button" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket2-fill" viewBox="0 0 16 16">
                         <path d="M5.929 1.757a.5.5 0 1 0-.858-.514L2.217 6H.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h.623l1.844 6.456A.75.75 0 0 0 3.69 15h8.622a.75.75 0 0 0 .722-.544L14.877 8h.623a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1.717L10.93 1.243a.5.5 0 1 0-.858.514L12.617 6H3.383zM4 10a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm3 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm4-1a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1"/>
                         </svg>
                         <p>Корзина</p>
                     </button>
-                </a>
+                </Link>
             </div>
 
-            <div class="head-icon dropdown-icon profile">                                           
-                <button class="head-button dropdown-button" @click="profileClick" >
+            <div class="head-icon dropdown-icon profile">   
+                
+                <Link href="/profile" v-if="userName" class="head-button dropdown-button" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-check" viewBox="0 0 16 16">
+                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+                    </svg>
+                    <p>{{userName}}</p>
+                </Link>
+
+                <button v-else class="head-button dropdown-button" @click="profileClick" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                     </svg>
                     <p>Войти</p>
                 </button>
             
-                <div class="dropdown-content">
-                    <a href="#">Аккаунт</a>  
-                    <a href="#">Покупки</a>  
-                    <a href="#">Настройки</a>  
-                    <a href="#">Выйти</a>
+                <div class="dropdown-content"> 
+                    <Link class="link">Покупки</Link>  
+                    <Link class="link">Настройки</Link>  
+                    <Link @click="quit" class="link">Выйти</Link>
                 </div>
             </div>
         </div>
     </div>
 
-    <LogInModal class="auth" v-if="modalAuthIsActive" />
+    <LogInModal class="auth z-100" v-if="modalAuthIsActive" :error />
 
 </template>
 
@@ -154,7 +188,7 @@ const profileClick=()=>{
     height: 60px;
 }
 
-.head-icon>a{
+.head-icon>link{
     border-radius: 1em;
 }
 
@@ -207,7 +241,7 @@ const profileClick=()=>{
     display: flex;
 }
 
-.dropdown-content>a{
+.dropdown-content>link{
     color: var(--color-text);
     font-size: 16px;
     border-radius: 10%;

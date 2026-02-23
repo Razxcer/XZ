@@ -1,28 +1,110 @@
 <script setup>
-import {ref} from 'vue'
-import { defineProps } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import {ref, defineProps} from 'vue';
+
+//Переменные
+const logInWin = ref(true)
+const regWin = ref(false)
+const errorInput = ref(null)
+const passwordRepeat = ref(null)
+
+const props = defineProps({
+    error: String
+})
+
+//Поменять форму на регистрацию
+const openRegModal=()=>{
+    logInWin.value = false
+    regWin.value = true    
+}
+
+//Поменять форму на вход
+const openLogInModal=()=>{
+    regWin.value = false
+    logInWin.value = true
+}
+
+//Форма для отправки в AuthController
+const form = useForm({
+    action: '',
+    name: '',
+    email: '',
+    password: '',
+})
+
+//Войти
+const submitLogIn=()=>{
+
+    form.action = 'enter'
+    form.post('/profile')
+    console.log(props.error)
+}
+
+//Зарегистрироваться
+const submitReg=()=>{
+    
+    if(form.password != passwordRepeat.value){
+        errorInput.value = "Пароли не совпадают!"
+        return;
+    }
+    else{
+        form.action = 'reg'
+        form.post('/profile')
+    }
+ 
+}
+
 
 </script>
 
 <template>
-<div class="auth" >
-        <form action="" method="post">
+    <div class="auth" >
+        <form v-if="logInWin" @submit.prevent="submitLogIn">
             <div class="title"><p>Вход</p></div>
-            <input type="text" name="login" id="login" class="input login" placeholder="Логин" minlength="2" maxlength="255">
-            <input type="password" name="password" id="password" class="input password" placeholder="Пароль" minlength="6" maxlength="255">  
+            <input type="text" v-model="form.name"  name="login" id="login" class="input login" placeholder="Логин">
+            <div v-if="form.errors.name" class="text-red-500 error">{{ form.errors.name }}</div>
+            
+            <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">
+            <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
+
             <input type="submit" value="Войти" class="submit">
 
             <div class="link_sign_up">
                 <p>Ещё нет аккаунта?</p>
-                <a href="#">Зарегистрироваться</a>
+                <a @click="openRegModal">Зарегистрироваться</a>
             </div>
-            <a href="#">Забыли пароль?</a>
+            <a>Забыли пароль?</a>
+        </form>
+
+        <form v-if="regWin" @submit.prevent="submitReg">
+            <div class="title"><p>Регистрация</p></div>
+
+            <input type="text" v-model="form.name"  name="login" id="login" class="input login" placeholder="Логин">
+            <div v-if="form.errors.name" class="text-red-500 error">{{ form.errors.name }}</div>
+
+            <input type="text" v-model="form.email" name="email" id="email" class="input email" placeholder="Email">
+            <div v-if="form.errors.email" class="text-red-500 error">{{ form.errors.email }}</div>
+
+            <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">  
+            <input type="password" v-model="passwordRepeat" name="password" id="password" class="input password" placeholder="Повторите пароль">
+            <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
+            <div v-if="errorInput" class="text-red-500 error">{{ errorInput }}</div>
+            <div v-if="props.error" class="text-red-500 error">{{ props.error }}</div>
+
+            <input type="submit" :disabled="form.processing" value="Зарегистрироваться" class="submit">
+
+            <div class="link_sign_up">
+                <p>Уже есть аккаунт?</p>
+                <a @click="openLogInModal">Войти</a>
+            </div>
         </form>
     </div>
 
 </template>
 
 <style scoped>
+
+
 
 .auth{
     margin-top: 100px;
@@ -141,8 +223,17 @@ form>a{
     opacity: 0.8;
 }
 
+form a{
+    cursor: pointer;
+}
+
 form a:hover{
     color: var(--clr-accent);
+}
+
+.error{
+    height: 20px;
+    width: 80%;
 }
 
 </style>
