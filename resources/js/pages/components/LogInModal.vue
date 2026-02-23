@@ -1,27 +1,37 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import {ref, defineProps} from 'vue';
+import {ref, defineProps, defineEmits} from 'vue';
 
 //Переменные
 const logInWin = ref(true)
 const regWin = ref(false)
 const errorInput = ref(null)
 const passwordRepeat = ref(null)
+const errorDisplay = ref(null)
 
 const props = defineProps({
     error: String
 })
 
+const emit = defineEmits(['closeModal'])
+const closeModal=()=>{
+    emit('closeModal', {closeWin: true})
+}
+
+errorDisplay.value = props.error
+
 //Поменять форму на регистрацию
 const openRegModal=()=>{
     logInWin.value = false
-    regWin.value = true    
+    regWin.value = true   
+    errorDisplay.value=null 
 }
 
 //Поменять форму на вход
 const openLogInModal=()=>{
     regWin.value = false
     logInWin.value = true
+    errorDisplay.value=null
 }
 
 //Форма для отправки в AuthController
@@ -34,15 +44,14 @@ const form = useForm({
 
 //Войти
 const submitLogIn=()=>{
-
+    closeModal
     form.action = 'enter'
     form.post('/profile')
-    console.log(props.error)
 }
 
 //Зарегистрироваться
 const submitReg=()=>{
-    
+    closeModal
     if(form.password != passwordRepeat.value){
         errorInput.value = "Пароли не совпадают!"
         return;
@@ -66,6 +75,7 @@ const submitReg=()=>{
             
             <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">
             <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
+            <div v-if="errorDisplay" class="text-red-500 error">{{ errorDisplay }}</div>
 
             <input type="submit" value="Войти" class="submit">
 
@@ -89,7 +99,7 @@ const submitReg=()=>{
             <input type="password" v-model="passwordRepeat" name="password" id="password" class="input password" placeholder="Повторите пароль">
             <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
             <div v-if="errorInput" class="text-red-500 error">{{ errorInput }}</div>
-            <div v-if="props.error" class="text-red-500 error">{{ props.error }}</div>
+            <div v-if="errorDisplay" class="text-red-500 error">{{ errorDisplay }}</div>
 
             <input type="submit" :disabled="form.processing" value="Зарегистрироваться" class="submit">
 

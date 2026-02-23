@@ -1,33 +1,15 @@
 <script setup>
-    import { onMounted, defineProps, ref, watch } from 'vue';
+    import { onMounted, defineProps, ref, watch, defineEmits } from 'vue';
     import LogInModal from './LogInModal.vue';
     import { computed } from 'vue';
     import { usePage, Link } from '@inertiajs/vue3';
     import { useUserStore } from '../../stores/user';
 
-    const error = ref(null)
+    const modalAuthIsActive = ref(false)
 
     //Pinia user.js
     const userStore = useUserStore();
     const userName = ref(userStore.userData);
-
-    const props = defineProps({
-        activeError: String
-    })
-
-    console.log(props.activeError)
-    watch(props.activeError, ()=>{
-        if(props.activeError){
-            error.value = props.activeError
-            modalAuthIsActive.value = true
-        }
-    })
-
-    //Кнопка вход
-    const modalAuthIsActive = ref(false)
-    const profileClick=()=>{
-        modalAuthIsActive.value=!modalAuthIsActive.value
-    }
 
     //Кнопка выход
     const quit = ()=>{
@@ -85,12 +67,12 @@
                     <p>{{userName}}</p>
                 </Link>
 
-                <button v-else class="head-button dropdown-button" @click="profileClick" >
+                <Link href="/profile" v-else class="head-button dropdown-button" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                     </svg>
                     <p>Войти</p>
-                </button>
+                </Link>
             
                 <div class="dropdown-content"> 
                     <Link class="link">Покупки</Link>  
@@ -100,8 +82,6 @@
             </div>
         </div>
     </div>
-
-    <LogInModal class="auth z-100" v-if="modalAuthIsActive" :error />
 
 </template>
 
