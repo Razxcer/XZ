@@ -6,13 +6,13 @@
 
     //Pinia user.js
     const page = usePage();
-    const userName = page.props.flash.userName
-    const error = page.props.flash.error
+    const error = ref(page.props.flash.error)
     const userStore = useUserStore();
     if(!userStore.userData)
     {
-        userStore.setUser(userName);
+        userStore.setUser(page.props.flash.userName);
     }
+    console.log(page.props.flash.userName)
 
     const logInWin = ref(true)
     const regWin = ref(false)
@@ -23,14 +23,14 @@
     const openRegModal=()=>{
         logInWin.value = false
         regWin.value = true   
-        error=null 
+        error.value=null 
     }
 
     //Поменять форму на вход
     const openLogInModal=()=>{
         regWin.value = false
         logInWin.value = true
-        error=null
+        error.value=null
     }
 
     //Форма для отправки в AuthController
@@ -77,6 +77,7 @@
                 <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">
                 <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
                 <div v-if="error" class="text-red-500 error">{{ error }}</div>
+                <div v-if="page.props.flash.error" class="text-red-500 error">{{ page.props.flash.error }}</div>
 
                 <input type="submit" value="Войти" class="submit">
 
@@ -100,7 +101,8 @@
                 <input type="password" v-model="passwordRepeat" name="password" id="password" class="input password" placeholder="Повторите пароль">
                 <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
                 <div v-if="errorInput" class="text-red-500 error">{{ errorInput }}</div>
-                <div v-if="errorDisplay" class="text-red-500 error">{{ error }}</div>
+                <div v-if="error" class="text-red-500 error">{{ error }}</div>
+                <div v-if="page.props.flash.error" class="text-red-500 error">{{ page.props.flash.error }}</div>
 
                 <input type="submit" :disabled="form.processing" value="Зарегистрироваться" class="submit">
 
