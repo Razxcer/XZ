@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,8 +16,9 @@ Route::post('/login', [AuthController::class, 'checkLogin']);
 Route::get('/reg',[AuthController::class, 'showReg']);
 Route::post('/reg',[AuthController::class, 'checkReg']);
 
+//Профиль
 
-
+Route::get('/profile', [MainController::class, 'showProfile']);
 
 
 

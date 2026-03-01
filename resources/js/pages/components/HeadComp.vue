@@ -1,6 +1,5 @@
 <script setup>
     import { onMounted, defineProps, ref, watch, defineEmits } from 'vue';
-    import LogInModal from './LogInModal.vue';
     import { computed } from 'vue';
     import { usePage, Link } from '@inertiajs/vue3';
     import { useUserStore } from '../../stores/user';
