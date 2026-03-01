@@ -9,13 +9,15 @@ import HeadComp from '../components/HeadComp.vue';
 
 //Форма для отправки в AuthController
 const form = useForm({
-    name: '',
-    password: ''
-})
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
+    })
 
 //Войти
 const submitLogIn=()=>{
-    form.post('/login')
+    form.post('/reg')
 }
 
 </script>
@@ -25,7 +27,10 @@ const submitLogIn=()=>{
     <div class="wrap">
         <div class="auth" >
             <form @submit.prevent="submitLogIn">
-                <div class="title"><p>Вход</p></div>
+                <div class="title"><p>Регистрация</p></div>
+
+                <input type="text" v-model="form.email" name="email" id="email" class="input email" placeholder="Email">
+                <div v-if="form.errors.email" class="text-red-500 error">{{ form.errors.email }}</div>
 
                 <input type="text" v-model="form.name"  name="login" id="login" class="input login" placeholder="Логин">
                 <div v-if="form.errors.name" class="text-red-500 error">{{ form.errors.name }}</div>
@@ -33,13 +38,15 @@ const submitLogIn=()=>{
                 <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">
                 <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
 
+                <input type="password" v-model="form.password_confirmation" name="password_confirmation" id="password_confirmation" class="input password" placeholder="Повторите пароль">
+                <div v-if="form.errors.password_confirmation" class="text-red-500 error">{{ form.errors.password_confirmation }}</div>
+
                 <input type="submit" value="Войти" class="submit">
 
                 <div class="link_sign_up">
-                    <p>Ещё нет аккаунта?</p>
-                    <Link href="/reg" class="a">Зарегистрироваться</Link>
+                    <p>Уже есть аккаунт?</p>
+                    <Link href="/login" class="a">Войти</Link>
                 </div>
-                <Link href="/error">Забыли пароль?</Link>
             </form>
         </div>
     </div>

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
-    public function show() {
+    public function showLogin() {
         return Inertia::render('auth/Login');
     }
 
@@ -24,12 +24,40 @@ class AuthController extends Controller
 
         $user = User::where('name',  $request->name)->first();
         if($user && Hash::check($request->password, $user->password)){
-            return redirect()->intended('/')->with('userName', $request->name);
+            return redirect()->intended('/')->with('userName', $validated['name']);
         }
         else{
             return back()->withErrors([
                 'password' => 'Неверный логин или пароль.',
-            ])->onlyInput('password');
+            ])->onlyInput('name');
+        }
+    }
+
+    public function showReg() {
+        return Inertia::render('auth/Reg');
+    }
+
+    public function checkReg(Request $request) {
+        $validated = $request->validate([
+            'email' => ['required','max:255','email'],
+            'name' => ['required','max:255'],
+            'password' => ['required', 'min:6','max:255','confirmed']
+        ]);
+        $email = User::where('email',  $request->email)->first();
+        $name = User::where('name',  $request->name)->first();
+        if($email){
+            return back()->withErrors([
+                'email' => 'Пользователь с таким email уже существует, авторизуйтесь',
+            ])->onlyInput('email', 'name', 'password');
+        }
+        else if($name){
+            return back()->withErrors([
+                'name' => 'Пользователь с таким именем уже существует, авторизуйтесь',
+            ])->onlyInput('email', 'name', 'password');
+        }
+        else{
+            User::create($validated);
+            return redirect()->intended('/')->with('userName', $validated['name']);
         }
     }
 

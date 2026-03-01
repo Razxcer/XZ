@@ -6,14 +6,31 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\ProductController;
 
+//Товары
 Route::get('/', [ProductController::class, 'index']);
 
-Route::get('/login', [AuthController::class, 'show']);
+//Авторизация
+Route::get('/login', [AuthController::class, 'showLogin']);
 Route::post('/login', [AuthController::class, 'checkLogin']);
+Route::get('/reg',[AuthController::class, 'showReg']);
+Route::post('/reg',[AuthController::class, 'checkReg']);
 
-// Route::get('/profile', [AuthController::class, 'profile']);
-// Route::post('/profile', [AuthController::class, 'auth']);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Ошибка
+Route::get('/error', function (){ return Inertia::render('Error'); });
 
 
 
