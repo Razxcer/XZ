@@ -8,8 +8,11 @@ use App\Http\Controllers\ProductController;
 
 Route::get('/', [ProductController::class, 'index']);
 
-Route::get('/profile', [AuthController::class, 'profile']);
-Route::post('/profile', [AuthController::class, 'auth']);
+Route::get('/login', [AuthController::class, 'show']);
+Route::post('/login', [AuthController::class, 'checkLogin']);
+
+// Route::get('/profile', [AuthController::class, 'profile']);
+// Route::post('/profile', [AuthController::class, 'auth']);
 
 
 

@@ -1,110 +1,194 @@
-<script setup lang="ts">
-import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
-import AuthBase from '@/layouts/AuthLayout.vue';
-import { register } from '@/routes';
-import { store } from '@/routes/login';
-import { request } from '@/routes/password';
-import { Form, Head } from '@inertiajs/vue3';
+<script setup>
+import { useForm, Link } from '@inertiajs/vue3';
+import {ref, defineProps, defineEmits} from 'vue';
+import HeadComp from '../components/HeadComp.vue';
 
-defineProps<{
-    status?: string;
-    canResetPassword: boolean;
-    canRegister: boolean;
-}>();
+//Переменные
+
+
+
+//Форма для отправки в AuthController
+const form = useForm({
+    name: '',
+    password: ''
+})
+
+//Войти
+const submitLogIn=()=>{
+    form.post('/login')
+}
+
 </script>
 
 <template>
-    <AuthBase
-        title="Log in to your account"
-        description="Enter your email and password below to log in"
-    >
-        <Head title="Log in" />
+    <HeadComp />
+    <div class="wrap">
+        <div class="auth" >
+            <form @submit.prevent="submitLogIn">
+                <div class="title"><p>Вход</p></div>
 
-        <div
-            v-if="status"
-            class="mb-4 text-center text-sm font-medium text-green-600"
-        >
-            {{ status }}
+                <input type="text" v-model="form.name"  name="login" id="login" class="input login" placeholder="Логин">
+                <div v-if="form.errors.name" class="text-red-500 error">{{ form.errors.name }}</div>
+                
+                <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">
+                <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>
+
+                <input type="submit" value="Войти" class="submit">
+
+                <div class="link_sign_up">
+                    <p>Ещё нет аккаунта?</p>
+                    <Link class="a">Зарегистрироваться</Link>
+                </div>
+                <a>Забыли пароль?</a>
+            </form>
         </div>
-
-        <Form
-            v-bind="store.form()"
-            :reset-on-success="['password']"
-            v-slot="{ errors, processing }"
-            class="flex flex-col gap-6"
-        >
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        name="email"
-                        required
-                        autofocus
-                        :tabindex="1"
-                        autocomplete="email"
-                        placeholder="email@example.com"
-                    />
-                    <InputError :message="errors.email" />
-                </div>
-
-                <div class="grid gap-2">
-                    <div class="flex items-center justify-between">
-                        <Label for="password">Password</Label>
-                        <TextLink
-                            v-if="canResetPassword"
-                            :href="request()"
-                            class="text-sm"
-                            :tabindex="5"
-                        >
-                            Forgot password?
-                        </TextLink>
-                    </div>
-                    <Input
-                        id="password"
-                        type="password"
-                        name="password"
-                        required
-                        :tabindex="2"
-                        autocomplete="current-password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="errors.password" />
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" :tabindex="3" />
-                        <span>Remember me</span>
-                    </Label>
-                </div>
-
-                <Button
-                    type="submit"
-                    class="mt-4 w-full"
-                    :tabindex="4"
-                    :disabled="processing"
-                    data-test="login-button"
-                >
-                    <Spinner v-if="processing" />
-                    Log in
-                </Button>
-            </div>
-
-            <div
-                class="text-center text-sm text-muted-foreground"
-                v-if="canRegister"
-            >
-                Don't have an account?
-                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
-            </div>
-        </Form>
-    </AuthBase>
+    </div>
 </template>
+
+<style scoped>
+
+.wrap{
+    margin-top: 60px;
+    width: 100%;
+    height: 1400px;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.auth{
+    width: 600px;
+    height: 500px;
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    opacity: 0.97;
+    background-color: var(--first-color);
+    border-radius: 1.5em;
+    box-shadow:0px 0px 10px;
+    flex-wrap: wrap;    
+}
+
+.auth .title{
+    width: 80%;
+    height: 40px;
+    margin: 5px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0.8;
+}
+
+.title>p{
+    color: var(--fifth-color);
+    font-size: 3em;
+    justify-content: center;
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.input{
+    width: 70%;
+    height: 30px;
+    border: none;
+    border-bottom: 5px solid var(--fifth-color);
+    color: var(--fifth-color);
+    background-color: rgba(111, 111, 111, 0);
+    font-size: 22px;
+    text-indent: 30px;
+    padding-bottom: 4px;
+
+    opacity: 0.8;
+}
+
+.input:autofill{
+    color: var(--fifth-color);
+    background-color: rgba(111, 111, 111, 0);
+    font-size: 30px;
+}
+
+.input::placeholder{
+    color: var(--fifth-color);
+    font-size: 1em;
+}
+
+.input:focus{
+    outline: none;
+}
+
+.submit{
+    width: 55%;
+    height: 40px;
+    background-color: var(--second-color);
+    color: var(--fifth-color);
+    border-radius: 10px;
+    font-size: 25px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+    transition: 0.3s;
+    border: none;
+    opacity: 0.8;
+}
+
+.submit:hover{
+    transform: scale(1.3);
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.link_sign_up{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.link_sign_up>p{
+    color: var(--clr-text);
+    font-size: 18px;
+
+    opacity: 0.8;
+}
+
+.link_sign_up>.a{
+    color: var(--clr-text);
+    font-size: 18px;
+
+    opacity: 0.8;
+}
+
+form>a{
+    color: var(--clr-text);
+    font-size: 18px;
+    width: 70%;
+    text-align: center;
+    
+    opacity: 0.8;
+}
+
+form a{
+    cursor: pointer;
+}
+
+form a:hover{
+    color: var(--clr-accent);
+}
+form .a:hover{
+    color: var(--clr-accent);
+}
+
+.error{
+    height: 20px;
+    width: 80%;
+}
+
+</style>

@@ -2,8 +2,20 @@
 import HeadComp from './components/HeadComp.vue'
 import Filters from './productsComponents/Filters.vue'
 import Catalog from './productsComponents/CatalogProducts.vue'
-import {Head, Link} from '@inertiajs/vue3';
+import { usePage, Link, useForm, Head, } from '@inertiajs/vue3';
+import { useUserStore } from '../stores/user'
 
+  //Если к нам пришли с юзер неймом
+  const page = usePage();
+  const userStore = useUserStore();
+  if(!userStore.userData)
+  {
+    userStore.setUser(page.props.flash.userName);
+  }
+
+
+
+  
   const props = defineProps({
     products:Array,
   });
