@@ -1,6 +1,7 @@
 <script setup>
 import {ref, defineProps, watch, computed} from 'vue'
 import '../../../css/app.css'
+import AboutGameModal from './AboutGameModal.vue';
 
 const props = defineProps({
         products: Array,
@@ -8,9 +9,17 @@ const props = defineProps({
     });
 
     const products = ref(props.products)
-
+    const currentProduct = ref(null)
     //Отфильтрованный массив
     const filtredArray = computed(() => products.value.filter(product=> product.price>=props.filter.minPrice && product.price<=props.filter.maxPrice))
+
+    const productCLicked=(product)=>{
+        currentProduct.value = product
+    }
+
+    const closeModal=()=>{
+        currentProduct.value=null
+    }
 
 
 </script>
@@ -18,30 +27,31 @@ const props = defineProps({
 
 <template>
 
-<div class="wrap">
+    <div class="wrap">
+        <AboutGameModal class="about-game" :product="currentProduct" v-if="currentProduct" @closeModal="closeModal"/>
 
-<ul class="catalog">
+        <ul class="catalog">
 
-    <li class="catalog-element" v-for="product in filtredArray"   >
-        <a class="link-prod">
-            <img :src="product.imageURL" alt="Картинка">
-        </a>
-        <p class="name-game">{{ product.title }}</p>
-        <div class="priceAndBuy">
-            <p class="price">{{product.price}} руб</p>
-            <button class="buy">
-                <p>Купить</p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
-                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-                </svg>
-            </button>
-        </div>                  
-    </li>
+            <li class="catalog-element" v-for="product in filtredArray" @click="productCLicked(product)"  >
+                <a class="link-prod">
+                    <img :src="product.imageURL" alt="Картинка">
+                </a>
+                <p class="name-game">{{ product.title }}</p>
+                <div class="priceAndBuy">
+                    <p class="price">{{product.price}} руб</p>
+                    <button class="buy">
+                        <p>Купить</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
+                            <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                        </svg>
+                    </button>
+                </div>                  
+            </li>
 
-</ul>
+        </ul>
 
 
-</div>
+    </div>
 
 </template>
 
@@ -50,6 +60,27 @@ const props = defineProps({
 
 .wrap{
     display: flex;
+}
+
+.about-game{
+    position: fixed;
+    left: 400px;
+    top: 80px;
+    width: calc(100vw - 450px);
+    height: calc(100vh - 100px);
+    z-index: 999;
+    animation: growIn 0.5s ease-out forwards;
+}
+
+@keyframes growIn {
+  from {
+    transform: scale(0); /* Полностью сжат */
+    opacity: 0;          /* Невидим */
+  }
+  to {
+    transform: scale(1); /* Исходный размер */
+    opacity: 1;          /* Полностью видим */
+  }
 }
 
 .catalog{
