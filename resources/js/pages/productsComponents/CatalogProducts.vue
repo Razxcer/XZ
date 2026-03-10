@@ -15,22 +15,19 @@ import AboutGameModal from './AboutGameModal.vue';
     //Отфильтрованный массив
     const filtredArray = computed(() => 
     {
-        if(props.filter.genres)
-        {
-            if(props.filter.genres == []){
-                products.value.forEach(product => {
-                    product.level = null
-                })
-            }
-            else{
-                products.value.forEach(product => {
-                    let level = 0
-                    props.filter.genres.forEach(genre => {
-                        if(props.genresProducts.find(item => item.product_id == product.id && item.genre_id == genre.id)) level++
-                    });
-                    product.level = level
+        if(!props.filter.genres || props.filter.genres.length==0 ){
+            products.value.forEach(product => {
+                product.level = 0
+            })
+        }
+        else{
+            products.value.forEach(product => {
+                let level = 0
+                props.filter.genres.forEach(genre => {
+                    if(props.genresProducts.find(item => item.product_id == product.id && item.genre_id == genre.id)) level++
                 });
-            }     
+                product.level = level
+            });
         }
         let temp = products.value.filter(product=> product.price>=props.filter.minPrice && product.price<=props.filter.maxPrice)
         return temp
