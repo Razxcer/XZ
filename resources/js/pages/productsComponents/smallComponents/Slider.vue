@@ -77,12 +77,16 @@ const updateMax = () => {
   max-width: 400px;
 }
 
-.values {
+.values{
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
   font-family: sans-serif;
   color: var(--clr-text);
+}
+
+.values span{
+  user-select: none;
 }
 
 .slider-container {

@@ -3,15 +3,54 @@ import {ref, defineProps, watch, computed} from 'vue'
 import '../../../css/app.css'
 import AboutGameModal from './AboutGameModal.vue';
 
-const props = defineProps({
+    const props = defineProps({
         products: Array,
-        filter: Object
+        filter: Object,
+        genresProducts: Array
     });
 
     const products = ref(props.products)
     const currentProduct = ref(null)
+
     //Отфильтрованный массив
-    const filtredArray = computed(() => products.value.filter(product=> product.price>=props.filter.minPrice && product.price<=props.filter.maxPrice))
+    const filtredArray = computed(() => 
+    {
+        if(props.filter.genres)
+        {
+            if(props.filter.genres == []){
+                products.value.forEach(product => {
+                    product.level = null
+                })
+            }
+            else{
+                products.value.forEach(product => {
+                    let level = 0
+                    props.filter.genres.forEach(genre => {
+                        if(props.genresProducts.find(item => item.product_id == product.id && item.genre_id == genre.id)) level++
+                    });
+                    product.level = level
+                });
+            }     
+        }
+        let temp = products.value.filter(product=> product.price>=props.filter.minPrice && product.price<=props.filter.maxPrice)
+        return temp
+    })
+
+    const groupedByLevel = computed(() => {
+        return filtredArray.value.reduce((acc, item) => {
+        if (!acc[item.level]) acc[item.level] = [];
+        acc[item.level].push(item);
+        return acc;
+    }, {});
+    });
+
+    // 2. Получаем список уровней и сортируем их [5, 4, 3, 2, 1, 0]
+    const sortedLevels = computed(() => {
+        return Object.keys(groupedByLevel.value)
+        .map(Number)
+        .sort((a, b) => b - a); // b - a дает обратный порядок (от большего к меньшему)
+        
+    });
 
     const productCLicked=(product)=>{
         currentProduct.value = product
@@ -30,25 +69,28 @@ const props = defineProps({
     <div class="wrap">
         <AboutGameModal class="about-game" :product="currentProduct" v-if="currentProduct" @closeModal="closeModal"/>
 
-        <ul class="catalog">
+        <div class="catalog">
 
-            <li class="catalog-element" v-for="product in filtredArray" @click="productCLicked(product)"  >
-                <a class="link-prod">
-                    <img :src="product.imageURL" alt="Картинка">
-                </a>
-                <p class="name-game">{{ product.title }}</p>
-                <div class="priceAndBuy">
-                    <p class="price">{{product.price}} руб</p>
-                    <button class="buy">
-                        <p>Купить</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
-                            <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-                        </svg>
-                    </button>
-                </div>                  
-            </li>
+            <ul class="level-section catalog" v-for="level in sortedLevels">
+                <div class="level-title" v-if="props.filter.genres != null && props.filter.genres.length!=0" >Совпадений по жанрам {{ level }} из {{ props.filter.genres.length}}</div>
 
-        </ul>
+                <li class="catalog-element" v-for="product in groupedByLevel[level]" >
+                    <a class="link-prod" @click="productCLicked(product)">
+                        <img :src="product.imageURL" alt="Картинка">
+                    </a>
+                    <p class="name-game">{{ product.title }}</p>
+                    <div class="priceAndBuy">
+                        <p class="price">{{product.price}} руб</p>
+                        <button class="buy">
+                            <p>Купить</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
+                                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                            </svg>
+                        </button>
+                    </div>                  
+                </li>
+            </ul>
+        </div>
 
 
     </div>
@@ -72,22 +114,28 @@ const props = defineProps({
     animation: growIn 0.5s ease-out forwards;
 }
 
-@keyframes growIn {
-  from {
-    transform: scale(0); /* Полностью сжат */
-    opacity: 0;          /* Невидим */
-  }
-  to {
-    transform: scale(1); /* Исходный размер */
-    opacity: 1;          /* Полностью видим */
-  }
-}
+
+
 
 .catalog{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     width: 100%;
+}
+
+.level-section{
+    border: 4px solid var(--bg-surface);
+    border-bottom: none;
+    width: calc(100% - 20px);
+    padding-top: 10px;
+}
+.level-title{
+    width: 100%;
+    text-align: center;
+    padding-bottom: 15px;
+    opacity: 0.8;
+    font-size: 17.5px;
 }
 
 .catalog-element{
@@ -106,6 +154,16 @@ const props = defineProps({
     transition: 0.2s;
 }
 
+@keyframes growIn {
+  from {
+    transform: scale(0); /* Полностью сжат */
+    opacity: 0;          /* Невидим */
+  }
+  to {
+    transform: scale(1); /* Исходный размер */
+    opacity: 1;          /* Полностью видим */
+  }
+}
 .catalog-element:hover{
     transform: scale(1.05);
     transition: 0.2s;
@@ -179,7 +237,9 @@ const props = defineProps({
     font-weight: bold;
 }
 
-
+.link-prod{
+    cursor: pointer;
+}
 
 
 </style>

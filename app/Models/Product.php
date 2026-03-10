@@ -9,6 +9,9 @@ class Product extends Model
 {
     use HasFactory;
 
+    public function genres() {
+        return $this->belongsToMany(Genre::class);
+    }
     protected $fillable = ['title', 'price', 'content', 'imageURL'];
 
 }

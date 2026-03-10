@@ -15,30 +15,16 @@ import { ref, computed } from 'vue';
   }
 
   const props = defineProps({
-    products:Array,
+    products: Array,
+    genres: Array,
+    genresProducts: Array
   });
-
+  
   const filter = ref({})
 
-
-  //Логика фильтров
-
-  const maxPriceValue = computed(() => 
-    props.products.reduce((max, product) => (product.price > max ? product.price : max), props.products[0].price)
-  );
-
-  const minPriceValue = computed(() => 
-    props.products.reduce((min, product) => (product.price < min ? product.price : min), props.products[0].price)
-  );
-  
-  filter.value.minPrice=minPriceValue.value
-  filter.value.maxPrice=maxPriceValue.value
-
-  const updatePrice=(payload)=>{
-    filter.value.minPrice = payload.min
-    filter.value.maxPrice = payload.max
+  const updateFilter=(payload)=>{
+    filter.value = payload
   }
-
 
 
 
@@ -52,9 +38,9 @@ import { ref, computed } from 'vue';
 
     <HeadComp />
 
-    <Filters :products="props.products" class="left-menu" @updatePrice="updatePrice" />
+    <Filters :products="props.products" :genres="props.genres" class="left-menu" @update-filter="updateFilter" />
 
-    <Catalog :products="props.products" :filter="filter" class="right-catalog"/>
+    <Catalog :products="props.products" :filter="filter" :genresProducts="genresProducts" class="right-catalog"/>
 
 </div> 
 
@@ -64,7 +50,6 @@ import { ref, computed } from 'vue';
 
 .wrapper{
   width: 100%;
-  height: 1000px;
   display: flex;
   flex-wrap: wrap;
   padding-top: 60px;
@@ -72,7 +57,7 @@ import { ref, computed } from 'vue';
 
 .left-menu{
   width: 350px;
-  height: 100%;
+  min-height: 100vh;
 }
 
 .right-catalog{

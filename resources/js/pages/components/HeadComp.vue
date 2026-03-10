@@ -3,6 +3,7 @@
     import { computed } from 'vue';
     import { usePage, Link } from '@inertiajs/vue3';
     import { useUserStore } from '../../stores/user';
+    import './../../../css/app.css';
 
     //Переменные
 
@@ -210,7 +211,7 @@
     flex-direction: column;
     position: absolute;
     background-color: var(--color-background-soft);
-    padding: 2px 10px;
+    padding: 2px;
     /* box-shadow: 0px 0px 0px 0px var(--second-color); */
     z-index: 1;
     border-radius: 1em;
@@ -220,10 +221,15 @@
     display: flex;
 }
 
-.dropdown-content>link{
+.dropdown-content>.link{
     color: var(--color-text);
     font-size: 16px;
-    border-radius: 10%;
+    border-radius: 1em;
+    padding: 1px 10px;
+}
+
+.dropdown-content>.link:hover{
+    background-color: var(--bg-main);
 }
 
 /* Теперь всё что связанно с авторизацией */
