@@ -41,11 +41,11 @@ const submitLogIn=()=>{
                 <input type="password" v-model="form.password_confirmation" name="password_confirmation" id="password_confirmation" class="input password" placeholder="Повторите пароль">
                 <div v-if="form.errors.password_confirmation" class="text-red-500 error">{{ form.errors.password_confirmation }}</div>
 
-                <input type="submit" value="Войти" class="submit">
+                <input type="submit" value="Зарегистрироваться" class="submit">
 
                 <div class="link_sign_up">
                     <p>Уже есть аккаунт?</p>
-                    <Link href="/login" class="a">Войти</Link>
+                    <Link href="/login" class="a">Зарегистрироваться</Link>
                 </div>
             </form>
         </div>
