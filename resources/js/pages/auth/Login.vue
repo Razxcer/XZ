@@ -9,12 +9,13 @@ import HeadComp from '../components/HeadComp.vue';
 
 //Форма для отправки в AuthController
 const form = useForm({
-    name: '',
+    email: '',
     password: ''
 })
 
 //Войти
 const submitLogIn=()=>{
+    
     form.post('/login')
 }
 
@@ -27,8 +28,8 @@ const submitLogIn=()=>{
             <form @submit.prevent="submitLogIn">
                 <div class="title"><p>Вход</p></div>
 
-                <input type="text" v-model="form.name"  name="login" id="login" class="input login" placeholder="Логин">
-                <div v-if="form.errors.name" class="text-red-500 error">{{ form.errors.name }}</div>
+                <input type="email" v-model="form.email"  name="email" id="email" class="input email" placeholder="Email">
+                <div v-if="form.errors.email" class="text-red-500 error">{{ form.errors.email }}</div>
                 
                 <input type="password" v-model="form.password" name="password" id="password" class="input password" placeholder="Пароль">
                 <div v-if="form.errors.password" class="text-red-500 error">{{ form.errors.password }}</div>

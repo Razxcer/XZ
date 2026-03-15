@@ -15,6 +15,7 @@ Route::get('/login', [AuthController::class, 'showLogin']);
 Route::post('/login', [AuthController::class, 'checkLogin']);
 Route::get('/reg',[AuthController::class, 'showReg']);
 Route::post('/reg',[AuthController::class, 'checkReg']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 //Профиль
 

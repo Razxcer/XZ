@@ -3,16 +3,29 @@ import HeadComp from './components/HeadComp.vue'
 import Filters from './productsComponents/Filters.vue'
 import Catalog from './productsComponents/CatalogProducts.vue'
 import { usePage, Link, useForm, Head, } from '@inertiajs/vue3';
-import { useUserStore } from '../stores/user'
-import { ref, computed } from 'vue';
+import { useUserStore } from '../stores/userStore'
+import { ref, computed, onMounted, watch } from 'vue';
 
   //Если к нам пришли с юзер неймом
-  const page = usePage();
-  const userStore = useUserStore();
-  if(!userStore.userData)
-  {
-    userStore.setUser(page.props.flash.userName);
-  }
+  // const page = usePage();
+  // const userStore = useUserStore();
+
+  // const syncUser = () => {
+  //   const auth = page.props.auth;
+  //   console.log(auth)
+  //   if (auth && auth.user) {
+  //     userStore.setUser(auth.user)
+  //   }
+  // }
+
+  // onMounted(()=>{
+  //   syncUser()
+  // })
+
+  // watch(() => page.props.auth, syncUser, { deep: true });
+
+
+
 
   const props = defineProps({
     products: Array,

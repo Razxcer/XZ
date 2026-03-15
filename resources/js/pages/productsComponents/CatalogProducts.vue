@@ -111,9 +111,6 @@ import AboutGameModal from './AboutGameModal.vue';
     animation: growIn 0.5s ease-out forwards;
 }
 
-
-
-
 .catalog{
     display: flex;
     flex-wrap: wrap;
@@ -182,10 +179,10 @@ import AboutGameModal from './AboutGameModal.vue';
     align-content: center;
     text-align: center;
     color: var(--color-text);
-    font-size: 1.5em;
+    font-size: 22px;
     font-weight: bold;
-    text-shadow: 0.7px 0.7px 0.5px var(--color-text);
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    /* text-shadow: 0.7px 0.7px 0.5px var(--color-text); */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .catalog-element>.priceAndBuy{

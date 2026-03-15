@@ -2,18 +2,42 @@
     import { onMounted, defineProps, ref, watch, defineEmits } from 'vue';
     import { computed } from 'vue';
     import { usePage, Link } from '@inertiajs/vue3';
-    import { useUserStore } from '../../stores/user';
+    import { router } from '@inertiajs/vue3';
+    import { useUserStore } from '../../stores/userStore';
     import './../../../css/app.css';
 
-    //Переменные
-
-    //Pinia user.js
+    //Pinia userStore.js
+    const page = usePage();
     const userStore = useUserStore();
-    const userName = ref(userStore.userData);
+    const user = ref()
+
+    const syncUser = () => {
+        const auth = page.props.auth;
+        if (auth && auth.user) {
+            userStore.setUser(auth.user)
+            user.value = auth.user
+        }
+    }
+
+    onMounted(()=>{
+        syncUser()
+    })
+
+    watch(() => page.props.auth, syncUser, { deep: true });
+
+
+
+
 
     //Кнопка выход
     const quit = ()=>{
-        userStore.setUser(null);
+        router.post('logout', {}, {
+            onSuccess: () => {
+                // После успешного редиректа от Laravel чистим Pinia
+                userStore.clearUser();
+                user.value = null
+            }
+        });
     }
 
 
@@ -59,12 +83,12 @@
 
             <div class="head-icon dropdown-icon profile">   
                 
-                <Link href="/profile" v-if="userName" class="head-button dropdown-button" >
+                <Link href="/profile" v-if="user" class="head-button dropdown-button" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-check" viewBox="0 0 16 16">
                         <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                         <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
                     </svg>
-                    <p>{{userName}}</p>
+                    <p>{{user.name}}</p>
                 </Link>
 
                 <Link href="/login" v-else class="head-button dropdown-button" >
@@ -75,9 +99,9 @@
                 </Link>
             
                 <div class="dropdown-content"> 
-                    <Link class="link">Покупки</Link>  
+                    <Link v-if="user" class="link">Покупки</Link>  
                     <Link class="link">Настройки</Link>  
-                    <Link @click="quit" class="link">Выйти</Link>
+                    <Link v-if="user" @click="quit" class="link">Выйти</Link>
                 </div>
             </div>
         </div>

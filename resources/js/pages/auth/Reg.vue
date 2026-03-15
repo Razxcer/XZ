@@ -45,7 +45,7 @@ const submitLogIn=()=>{
 
                 <div class="link_sign_up">
                     <p>Уже есть аккаунт?</p>
-                    <Link href="/login" class="a">Зарегистрироваться</Link>
+                    <Link href="/login" class="a">Войти</Link>
                 </div>
             </form>
         </div>

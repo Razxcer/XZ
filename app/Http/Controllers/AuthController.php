@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 
 class AuthController extends Controller
@@ -18,18 +18,19 @@ class AuthController extends Controller
 
     public function checkLogin(Request $request) {
         $validated = $request->validate([
-            'name' => ['required','max:255'],
+            'email' => ['required','max:255','email'],
             'password' => ['required', 'min:6','max:255']
         ]);
 
-        $user = User::where('name',  $request->name)->first();
-        if($user && Hash::check($request->password, $user->password)){
-            return redirect()->intended('/')->with('userName', $validated['name']);
+        $user = User::where('email',  $validated['email'])->first();
+        if($user && Hash::check($validated['password'], $user->password)){
+            Auth::login($user, true);
+            return redirect()->intended('/')->with('userName', $user->name);
         }
         else{
             return back()->withErrors([
                 'password' => 'Неверный логин или пароль.',
-            ])->onlyInput('name');
+            ])->onlyInput('email');
         }
     }
 
@@ -57,59 +58,25 @@ class AuthController extends Controller
         }
         else{
             User::create($validated);
+            $user = User::where('email',  $validated['email'])->first();
+            Auth::login($user, true);
             return redirect()->intended('/')->with('userName', $validated['name']);
         }
     }
 
-  
-    // public function auth(Request $request)
-    // {
+    public function logout(Request $request)
+    {
+        // 1. Стандартный выход Laravel (удаляет привязку юзера к сессии)
+        Auth::logout();
 
-    //     if($request->input('action') == "enter")
-    //     {
-    //         $validated = $request->validate([
-    //             'name' => 'required|max:255',
-    //             'password' => 'required|min:6|max:255'
-    //         ]);
+        // 2. Полная очистка текущей сессии на сервере
+        $request->session()->invalidate();
 
-    //         $user = User::where('name',  $request->name)->first();
+        // 3. Генерация нового токена CSRF (защита от повторного использования сессии)
+        $request->session()->regenerateToken();
 
-    //         if($user && Hash::check($request->password, $user->password)){
-    //             return redirect('/profile')->with('userName', $request->name);
-    //         }
-    //         else{
-    //             return redirect('/profile')->with('error', "Неправильный пароль");
-    //         }
-    //     }
-    //     else if($request->action == "reg")
-    //     {
-            
-    //         $validated = $request->validate([
-    //             'name' => 'required|max:255',
-    //             'email'=> 'required',
-    //             'password' => 'required|min:6|max:255'
-    //         ]);
+        // Перенаправляем на главную или страницу входа
+        return redirect('/');
+    }
 
-    //         $user = User::where('name',  $request->name)->first();
-
-    //         if($user){
-    //             return redirect('/profile')->with('error', "Такой пользователь уже существует"); 
-    //         }
-    //         else{
-    //             User::create($validated);
-    //             return redirect('/profile')->with('userName', $request->name); 
-    //         } 
-    //     }
-    //     else
-    //     {
-    //         return Inertia::render('Error');
-    //     }
-
-        
-    // }
-
-    // public function profile()
-    // {
-    //     return Inertia::render('Profile');
-    // }
 }
