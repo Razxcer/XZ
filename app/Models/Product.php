@@ -14,4 +14,8 @@ class Product extends Model
     }
     protected $fillable = ['title', 'price', 'content', 'imageURL'];
 
+    public function favorites() {
+        return $this->belongsToMany(User::class, 'favorites', 'product_id', 'user_id');
+    }
+
 }

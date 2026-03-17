@@ -2,29 +2,9 @@
 import HeadComp from './components/HeadComp.vue'
 import Filters from './productsComponents/Filters.vue'
 import Catalog from './productsComponents/CatalogProducts.vue'
-import { usePage, Link, useForm, Head, } from '@inertiajs/vue3';
+import { usePage, Link, useForm, Head, router} from '@inertiajs/vue3';
 import { useUserStore } from '../stores/userStore'
 import { ref, computed, onMounted, watch } from 'vue';
-
-  //Если к нам пришли с юзер неймом
-  // const page = usePage();
-  // const userStore = useUserStore();
-
-  // const syncUser = () => {
-  //   const auth = page.props.auth;
-  //   console.log(auth)
-  //   if (auth && auth.user) {
-  //     userStore.setUser(auth.user)
-  //   }
-  // }
-
-  // onMounted(()=>{
-  //   syncUser()
-  // })
-
-  // watch(() => page.props.auth, syncUser, { deep: true });
-
-
 
 
   const props = defineProps({
@@ -33,6 +13,10 @@ import { ref, computed, onMounted, watch } from 'vue';
     genresProducts: Array
   });
   
+  onMounted(()=>{
+    console.log(props.products)
+  })
+
   const filter = ref({})
 
   const updateFilter=(payload)=>{
@@ -53,7 +37,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 
     <Filters :products="props.products" :genres="props.genres" class="left-menu" @update-filter="updateFilter" />
 
-    <Catalog :products="props.products" :filter="filter" :genresProducts="genresProducts" class="right-catalog"/>
+    <Catalog :products="props.products" :filter="filter" :genresProducts="genresProducts" class="right-catalog" />
 
 </div> 
 

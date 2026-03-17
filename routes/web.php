@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -8,7 +9,8 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\ProductController;
 
 //Товары
-Route::get('/', [ProductController::class, 'index']);
+Route::redirect('/', '/products');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 //Авторизация
 Route::get('/login', [AuthController::class, 'showLogin']);
@@ -21,9 +23,11 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/profile', [MainController::class, 'showProfile']);
 
+//Избранное
+Route::middleware(['auth'])->post('/{product}/toggle-favorite', [FavoriteController::class, 'toggle']);
 
-
-
+//О игре
+Route::get('/product/{product}', [ProductController::class, 'aboutGameModalShow']);
 
 
 

@@ -5,7 +5,9 @@ import { createApp, h } from 'vue';
 import '../css/app.css';
 import { initializeTheme } from './composables/useAppearance';
 import { createPinia } from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+// @ts-ignore
+import { modal } from 'momentum-modal';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
@@ -23,6 +25,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(pinia)
+            .use(modal, props)
             .mount(el);
     },
     progress: {

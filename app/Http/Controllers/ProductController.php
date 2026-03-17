@@ -18,9 +18,26 @@ class ProductController extends Controller
         $genresProducts = Genre_product::all();
         
         return Inertia::render('Index',[
-            'products' => $products,
+            'products' => Product::with('favorites')->get()->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'title' => $product->title,
+                    'content' => $product->content,
+                    'price' => $product->price,
+                    'imageURL' => $product->imageURL,
+                    // Возвращаем boolean: есть ли ID текущего юзера в списке лайков
+                    'is_favorite' => $product->favorites->contains(auth()->id()),
+                ];
+            }),
+            // 'products' => $products,
             'genres'=> $genres,
             'genresProducts' => $genresProducts
         ]);
+    }
+
+    public function aboutGameModalShow(Product $product) {
+        return Inertia::modal('productsComponents/smallComponents/AboutGameModal')
+        ->with(['product' => $product])
+        ->baseRoute('products.index');
     }
 }
