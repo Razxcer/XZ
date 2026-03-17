@@ -34,10 +34,4 @@ class ProductController extends Controller
             'genresProducts' => $genresProducts
         ]);
     }
-
-    public function aboutGameModalShow(Product $product) {
-        return Inertia::modal('productsComponents/smallComponents/AboutGameModal')
-        ->with(['product' => $product])
-        ->baseRoute('products.index');
-    }
 }

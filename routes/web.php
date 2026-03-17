@@ -24,10 +24,10 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', [MainController::class, 'showProfile']);
 
 //Избранное
-Route::middleware(['auth'])->post('/{product}/toggle-favorite', [FavoriteController::class, 'toggle']);
+Route::middleware(['auth'])->post('/product/{product}/toggle-favorite', [FavoriteController::class, 'toggle']);
 
-//О игре
-Route::get('/product/{product}', [ProductController::class, 'aboutGameModalShow']);
+// //О игре
+// Route::get('/product/{product}', [ProductController::class, 'aboutGameModalShow']);
 
 
 

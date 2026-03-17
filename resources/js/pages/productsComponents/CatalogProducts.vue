@@ -12,6 +12,7 @@ import { useUserStore } from '../../stores/userStore';
     });
 
     const products = ref(props.products)
+    const currentProduct = ref(null)
 
     //Отфильтрованный массив
     const filtredArray = computed(() => 
@@ -50,20 +51,19 @@ import { useUserStore } from '../../stores/userStore';
         
     });
 
-    const productCLicked=(productId)=>{
-        // router.get("/product/"+ productId, {}, {
-        //     preserveScroll: true, // Страница останется на том же месте
-        //     onSuccess: () => {
-                
-        //     }
-        // })
+    const productCLicked=(product)=>{
+        currentProduct.value = product
+    }
+
+    const closeModal=()=>{
+        currentProduct.value=null
     }
 
     //Избранное
     const toggle = (productId) => {
         if(useUserStore().user)
         {
-            router.post("/"+ productId + '/toggle-favorite', {}, {
+            router.post("/product/"+ productId + '/toggle-favorite', {}, {
                 preserveScroll: true, // Страница останется на том же месте
                 onSuccess: () => {
                     products.value.find(product => product.id == productId).is_favorite = !products.value.find(product => product.id == productId).is_favorite
@@ -83,7 +83,7 @@ import { useUserStore } from '../../stores/userStore';
 <template>
 
     <div class="wrap">
-        <!-- <AboutGameModal class="about-game" :product="currentProduct" v-if="currentProduct" @closeModal="closeModal"/> -->
+        <AboutGameModal class="about-game" :product="currentProduct" v-if="currentProduct" @closeModal="closeModal"/>
 
         <div class="catalog">
 
@@ -91,9 +91,9 @@ import { useUserStore } from '../../stores/userStore';
                 <div class="level-title" v-if="props.filter.genres != null && props.filter.genres.length!=0" >Совпадений по жанрам {{ level }} из {{ props.filter.genres.length}}</div>
 
                 <li class="catalog-element" v-for="product in groupedByLevel[level]" >
-                    <Link class="link-prod" :href="'/product/' + product.id" @click="productCLicked(product.id)">
+                    <a class="link-prod" @click="productCLicked(product)">
                         <img :src="product.imageURL" alt="Картинка">
-                    </Link>
+                    </a>
                     <div class="basket card-button">
                         <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-cart-plus-fill" viewBox="0 0 16 17">
                             <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0"/>
