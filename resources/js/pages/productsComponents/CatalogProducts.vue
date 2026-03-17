@@ -69,16 +69,39 @@ import { useUserStore } from '../../stores/userStore';
         }
     }
 
+    //Корзина
+    const toggleBasket = (productId) => {
+        if(useUserStore().user)
+        {
+            router.post("/product/"+ productId + '/toggle-basket', {}, {
+                preserveScroll: true, // Страница останется на том же месте
+                onSuccess: () => {
+                    products.value.find(product => product.id == productId).in_basket = !products.value.find(product => product.id == productId).in_basket
+                }
+            })
+        }
+        else{
+            alert("У вас есть аккаунт? авторизуйтесь если так, иначе зарегистрируйтесь")
+        }
+    }
+
 
     //Кнопка купить
     const buyProduct=()=>{
         console.log(props.selectedProduct)
     }
 
+    //Открытый в избранное
     const selectedInFavorite=(payload)=>{
         toggleFavorite(payload)
     }
 
+    //Открытый в корзину
+    const selectedInBasket=(payload)=>{
+        toggleBasket(payload)
+    }
+
+    //Закрыть открытый продукт
     const closeModal=()=>{
         router.visit('/products', { preserveScroll: true });
     }
@@ -94,6 +117,7 @@ import { useUserStore } from '../../stores/userStore';
         :product="props.products.find(product => props.selectedProduct.id == product.id)" 
         v-if="props.selectedProduct"
         @in-favorites="selectedInFavorite"
+        @in-basket="selectedInBasket"
         @closeModal="closeModal"/>
 
         <div class="catalog">
@@ -105,8 +129,8 @@ import { useUserStore } from '../../stores/userStore';
                     <Link :href="'/products/'+product.id" preserve-scroll preserve-state class="link-prod">
                         <img :src="product.imageURL" alt="Картинка">
                     </Link>
-                    <div class="basket card-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-cart-plus-fill" viewBox="0 0 16 17">
+                    <div class="basket card-button" :class="{'in-basket': product.in_basket}">
+                        <svg @click="toggleBasket(product.id)" xmlns="http://www.w3.org/2000/svg" class="bi bi-cart-plus-fill" viewBox="0 0 16 17">
                             <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0"/>
                         </svg>
                     </div>
@@ -290,12 +314,12 @@ import { useUserStore } from '../../stores/userStore';
     opacity: 1;
 }
 
-.favorites{
+.basket{
     margin-left: calc(400px - 50px);
     margin-top: 5px;
 }
 
-.basket{
+.favorites{
     margin-left: calc(400px - 120px);
     margin-top: 5px;
 }
@@ -310,6 +334,11 @@ import { useUserStore } from '../../stores/userStore';
 
 .is-favorite>svg{
     fill: palevioletred;
+    opacity: 0.8;
+}
+
+.in-basket>svg{
+    fill: green;
     opacity: 0.8;
 }
 

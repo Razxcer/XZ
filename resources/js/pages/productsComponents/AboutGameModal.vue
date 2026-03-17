@@ -6,7 +6,7 @@ const props = defineProps({
     product: Object
 })
 
-const emit = defineEmits(['closeModal', 'in-favorites'])
+const emit = defineEmits(['closeModal', 'in-favorites', 'in-basket'])
 
 const closeModal = ()=>{
     emit('closeModal')
@@ -15,6 +15,10 @@ const closeModal = ()=>{
 
 const inFavorites=()=>{
     emit('in-favorites', props.product.id)
+}
+
+const inBasket=()=>{
+    emit('in-basket', props.product.id)
 }
 
 </script>
@@ -27,7 +31,7 @@ const inFavorites=()=>{
                 <svg xmlns="http://www.w3.org/2000/svg" @click="inFavorites" :class="{'is-favorite': props.product.is_favorite}" class="bi bi-heart-fill action-btn like-btn" viewBox="0 0 16 16" >
                     <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-basket2-fill action-btn" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" @click="inBasket" :class="{'in-basket': props.product.in_basket}" class="bi bi-basket2-fill action-btn basket-btn" viewBox="0 0 16 16">
                     <path d="M5.929 1.757a.5.5 0 1 0-.858-.514L2.217 6H.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h.623l1.844 6.456A.75.75 0 0 0 3.69 15h8.622a.75.75 0 0 0 .722-.544L14.877 8h.623a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1.717L10.93 1.243a.5.5 0 1 0-.858.514L12.617 6H3.383zM4 10a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm3 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm4-1a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1"/>
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" @click="closeModal" class="bi bi-x-lg close-btn action-btn" viewBox="0 0 16 16" >
@@ -114,8 +118,18 @@ const inFavorites=()=>{
     fill-opacity: 0.4;
 }
 
+.basket-btn:hover{
+    fill: green;
+    fill-opacity: 0.4;
+}
+
 .is-favorite{
     fill: palevioletred;
+    fill-opacity: 1;
+}
+
+.in-basket{
+    fill: green;
     fill-opacity: 1;
 }
 </style>

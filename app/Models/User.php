@@ -53,4 +53,7 @@ class User extends Authenticatable
     public function favorites() {
         return $this->belongsToMany(Product::class, 'favorites');
     }
+    public function baskets() {
+        return $this->belongsToMany(Product::class, 'baskets');
+    }
 }

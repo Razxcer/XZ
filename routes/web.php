@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BasketController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::get('/profile', [MainController::class, 'showProfile']);
 
 //Избранное
 Route::middleware(['auth'])->post('/product/{product}/toggle-favorite', [FavoriteController::class, 'toggle']);
+
+//Корзина
+Route::middleware(['auth'])->post('/product/{product}/toggle-basket', [BasketController::class, 'toggle']);
 
 
 

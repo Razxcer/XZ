@@ -26,6 +26,7 @@ class ProductController extends Controller
                     'imageURL' => $product->imageURL,
                     // Возвращаем boolean: есть ли ID текущего юзера в списке лайков
                     'is_favorite' => $product->favorites->contains(auth()->id()),
+                    'in_basket' => $product->baskets->contains(auth()->id()),
                 ];
             }),
             // 'products' => $products,
