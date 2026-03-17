@@ -10,7 +10,7 @@ use App\Http\Controllers\ProductController;
 
 //Товары
 Route::redirect('/', '/products');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{product?}', [ProductController::class, 'index'])->name('products.index');
 
 //Авторизация
 Route::get('/login', [AuthController::class, 'showLogin']);
@@ -26,8 +26,7 @@ Route::get('/profile', [MainController::class, 'showProfile']);
 //Избранное
 Route::middleware(['auth'])->post('/product/{product}/toggle-favorite', [FavoriteController::class, 'toggle']);
 
-// //О игре
-// Route::get('/product/{product}', [ProductController::class, 'aboutGameModalShow']);
+
 
 
 

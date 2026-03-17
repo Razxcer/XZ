@@ -10,11 +10,12 @@ import { ref, computed, onMounted, watch } from 'vue';
   const props = defineProps({
     products: Array,
     genres: Array,
-    genresProducts: Array
+    genresProducts: Array,
+    selectedProduct: Object,
   });
   
   onMounted(()=>{
-    console.log(props.products)
+    console.log(props)
   })
 
   const filter = ref({})
@@ -35,9 +36,18 @@ import { ref, computed, onMounted, watch } from 'vue';
 
     <HeadComp />
 
-    <Filters :products="props.products" :genres="props.genres" class="left-menu" @update-filter="updateFilter" />
+    <Filters 
+    :products="props.products" 
+    :genres="props.genres" 
+    @update-filter="updateFilter"
+    class="left-menu" />
 
-    <Catalog :products="props.products" :filter="filter" :genresProducts="genresProducts" class="right-catalog" />
+    <Catalog 
+    :products="props.products" 
+    :filter="filter" 
+    :genresProducts="props.genresProducts" 
+    :selectedProduct="props.selectedProduct"
+    class="right-catalog" />
 
 </div> 
 

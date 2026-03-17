@@ -11,9 +11,8 @@ use App\Models\Genre;
 
 class ProductController extends Controller
 {
-    public function index(): Response
-    {
-        $products = Product::all();
+    public function index($productId = null): Response
+    {;
         $genres = Genre::all();
         $genresProducts = Genre_product::all();
         
@@ -31,7 +30,8 @@ class ProductController extends Controller
             }),
             // 'products' => $products,
             'genres'=> $genres,
-            'genresProducts' => $genresProducts
+            'genresProducts' => $genresProducts,
+            'selectedProduct' => $productId ? Product::find($productId) : null,
         ]);
     }
 }

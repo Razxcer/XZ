@@ -8,11 +8,11 @@ import { useUserStore } from '../../stores/userStore';
     const props = defineProps({
         products: Array,
         filter: Object,
-        genresProducts: Array
+        genresProducts: Array,
+        selectedProduct: Object
     });
 
     const products = ref(props.products)
-    const currentProduct = ref(null)
 
     //Отфильтрованный массив
     const filtredArray = computed(() => 
@@ -51,16 +51,10 @@ import { useUserStore } from '../../stores/userStore';
         
     });
 
-    const productCLicked=(product)=>{
-        currentProduct.value = product
-    }
-
-    const closeModal=()=>{
-        currentProduct.value=null
-    }
+    
 
     //Избранное
-    const toggle = (productId) => {
+    const toggleFavorite = (productId) => {
         if(useUserStore().user)
         {
             router.post("/product/"+ productId + '/toggle-favorite', {}, {
@@ -76,6 +70,18 @@ import { useUserStore } from '../../stores/userStore';
     }
 
 
+    //Кнопка купить
+    const buyProduct=()=>{
+        console.log(props.selectedProduct)
+    }
+
+    const selectedInFavorite=(payload)=>{
+        toggleFavorite(payload)
+    }
+
+    const closeModal=()=>{
+        router.visit('/products', { preserveScroll: true });
+    }
 
 </script>
 
@@ -83,7 +89,12 @@ import { useUserStore } from '../../stores/userStore';
 <template>
 
     <div class="wrap">
-        <AboutGameModal class="about-game" :product="currentProduct" v-if="currentProduct" @closeModal="closeModal"/>
+
+        <AboutGameModal class="about-game" 
+        :product="props.products.find(product => props.selectedProduct.id == product.id)" 
+        v-if="props.selectedProduct"
+        @in-favorites="selectedInFavorite"
+        @closeModal="closeModal"/>
 
         <div class="catalog">
 
@@ -91,23 +102,23 @@ import { useUserStore } from '../../stores/userStore';
                 <div class="level-title" v-if="props.filter.genres != null && props.filter.genres.length!=0" >Совпадений по жанрам {{ level }} из {{ props.filter.genres.length}}</div>
 
                 <li class="catalog-element" v-for="product in groupedByLevel[level]" >
-                    <a class="link-prod" @click="productCLicked(product)">
+                    <Link :href="'/products/'+product.id" preserve-scroll preserve-state class="link-prod">
                         <img :src="product.imageURL" alt="Картинка">
-                    </a>
+                    </Link>
                     <div class="basket card-button">
                         <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-cart-plus-fill" viewBox="0 0 16 17">
                             <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0"/>
                         </svg>
                     </div>
                     <div class="favorites card-button" :class="{'is-favorite': product.is_favorite}">
-                        <svg @click="toggle(product.id)" xmlns="http://www.w3.org/2000/svg" class="bi bi-heart-fill" viewBox="-0.5 -1 17 17">
+                        <svg @click="toggleFavorite(product.id)" xmlns="http://www.w3.org/2000/svg" class="bi bi-heart-fill" viewBox="-0.5 -1 17 17">
                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                         </svg>
                     </div>
                     <p class="name-game">{{ product.title }}</p>
                     <div class="priceAndBuy">
                         <p class="price">{{product.price}} руб</p>
-                        <button class="buy">
+                        <button class="buy" @click="buyProduct">
                             <p>Купить</p>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
                                 <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
