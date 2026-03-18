@@ -25,9 +25,11 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', [MainController::class, 'showProfile']);
 
 //Избранное
+Route::middleware(['auth'])->get('/favorite', [FavoriteController::class, 'index']);
 Route::middleware(['auth'])->post('/product/{product}/toggle-favorite', [FavoriteController::class, 'toggle']);
 
 //Корзина
+Route::middleware(['auth'])->get('/basket', [BasketController::class, 'index']);
 Route::middleware(['auth'])->post('/product/{product}/toggle-basket', [BasketController::class, 'toggle']);
 
 

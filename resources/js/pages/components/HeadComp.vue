@@ -25,6 +25,30 @@
 
     watch(() => page.props.auth, syncUser, { deep: true });
 
+    const favoriteClick=()=>{
+        if(useUserStore().user)
+        {
+            router.get('/favorite', {}, {})
+        }
+        else{
+            alert("У вас есть аккаунт? авторизуйтесь если так, иначе зарегистрируйтесь")
+        }
+    }
+
+    const basketClick=()=>{
+        if(useUserStore().user)
+        {
+            router.get('/basket', {}, {})
+        }
+        else{
+            alert("У вас есть аккаунт? авторизуйтесь если так, иначе зарегистрируйтесь")
+        }
+    }
+
+
+
+
+
 
 
 
@@ -60,8 +84,8 @@
 
         <div class="head-icons-panel">
             <div class="head-icon favorites">
-                <Link href="/favorites"> 
-                    <button class="head-button" >
+                <Link @click="favoriteClick" > 
+                    <button class="head-button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                         </svg>
@@ -71,7 +95,7 @@
             </div>
 
             <div class="head-icon basket">
-                <Link href="/basket"> 
+                <Link @click="basketClick"> 
                     <button class="head-button" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket2-fill" viewBox="0 0 16 16">
                         <path d="M5.929 1.757a.5.5 0 1 0-.858-.514L2.217 6H.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h.623l1.844 6.456A.75.75 0 0 0 3.69 15h8.622a.75.75 0 0 0 .722-.544L14.877 8h.623a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1.717L10.93 1.243a.5.5 0 1 0-.858.514L12.617 6H3.383zM4 10a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm3 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm4-1a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1"/>

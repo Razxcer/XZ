@@ -4,15 +4,16 @@ import HeadComp from './components/HeadComp.vue';
 import { ref } from 'vue'
 
 const props = defineProps({
-    favorites: Array
+    basket: Array
 })
 
 const gamesHave=ref()
-const gamesLen = props.favorites.length
+const gamesLen = props.basket.length
 
 if(gamesLen%10<=0 || gamesLen%10>=5) gamesHave.value = "игр"
 else if(gamesLen%10==1) gamesHave.value = "игра"
 else gamesHave.value = "игры"
+
 
 
 
@@ -23,10 +24,10 @@ else gamesHave.value = "игры"
     <HeadComp />
 
     <div class="wrap">
-        <div class="you-have">У вас в избранном {{ props.favorites.length }} {{gamesHave}}:</div>
+        <div class="you-have">У вас в корзине {{ props.basket.length }} {{gamesHave}}:</div>
 
         <ul class="catalog">
-            <li class="catalog-element" v-for="product in props.favorites" >
+            <li class="catalog-element" v-for="product in props.basket" >
                     <Link :href="'/product/'+product.id" preserve-scroll preserve-state class="link-prod">
                         <img :src="product.imageURL" alt="Картинка">
                     </Link>

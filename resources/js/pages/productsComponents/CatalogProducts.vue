@@ -163,6 +163,7 @@ import { useUserStore } from '../../stores/userStore';
 
 .wrap{
     display: flex;
+    align-items: start;
 }
 
 .about-game{
