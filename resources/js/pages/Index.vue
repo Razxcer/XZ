@@ -13,10 +13,6 @@ import { ref, computed, onMounted, watch } from 'vue';
     genresProducts: Array,
     selectedProduct: Object,
   });
-  
-  onMounted(()=>{
-    console.log(props)
-  })
 
   const filter = ref({})
 

@@ -3,7 +3,7 @@ import '../../../css/app.css'
 import {ref, defineProps} from 'vue'
 
 const props = defineProps({
-    product: Object
+    product: Object,
 })
 
 const emit = defineEmits(['closeModal', 'in-favorites', 'in-basket'])
@@ -20,6 +20,8 @@ const inFavorites=()=>{
 const inBasket=()=>{
     emit('in-basket', props.product.id)
 }
+
+console.log(props.product)
 
 </script>
 
@@ -40,13 +42,45 @@ const inBasket=()=>{
             </div>
         </div>
     
-    
+        <div class="modal-content">
+            <div class="modal-body">
+                <!-- Левая колонка: Изображение и Цена -->
+                <div class="sidebar">
+                <img :src="product.imageURL" :alt="product.title" class="game-image" />
+                <div class="price-section">
+                    <span class="price">{{ product.price }} ₽</span>
+                    <button class="buy-button">В корзину</button>
+                </div>
+                </div>
+
+                <!-- Правая колонка: Информация -->
+                <div class="main-info">          
+                    <div class="genres">
+                        <span v-for="genre in props.product.genres" class="genre-tag">
+                        {{ genre.name}}
+                        </span>
+                    </div>
+
+                    <div class="description">
+                        <h3>Об игре</h3>
+                        <p>{{ product.content }}</p>
+                    </div>
+
+                    <div class="features">
+                        <!-- <strong>Разработчик:</strong> {{ game.developer }}<br>
+                        <strong>Дата выхода:</strong> {{ game.releaseDate }} -->
+                    </div>
+                </div>
+            </div>
+      </div>
+
+      <!--
         <div class="left">
             <img class="product-img" :src="props.product.imageURL" alt="Альтушка">    
         </div>
 
         <div class="right"></div>
-
+-->
 
     </div>
 </template>
@@ -60,6 +94,7 @@ const inBasket=()=>{
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .left{
@@ -132,4 +167,73 @@ const inBasket=()=>{
     fill: green;
     fill-opacity: 1;
 }
+
+
+.modal-content {
+  color: white;
+  width: 98%;
+  height: 90%;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 600px 1fr;
+  gap: 30px;
+  padding: 40px;
+}
+
+.game-image {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.price-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.buy-button {
+  background: #6200ea;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.genre-tag {
+  display: inline-block;
+  background: #333;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-right: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.description h3 { 
+    margin-bottom: 10px; 
+    color: #fff;
+    font-size: 19px;
+}
+.description p { 
+    line-height: 1.6; 
+    color: #ccc; 
+    font-size: 17px;
+}
+
 </style>

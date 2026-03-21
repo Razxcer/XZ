@@ -114,7 +114,7 @@ import { useUserStore } from '../../stores/userStore';
     <div class="wrap">
 
         <AboutGameModal class="about-game" 
-        :product="props.products.find(product => props.selectedProduct.id == product.id)" 
+        :product="props.selectedProduct" 
         v-if="props.selectedProduct"
         @in-favorites="selectedInFavorite"
         @in-basket="selectedInBasket"

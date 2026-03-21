@@ -15,6 +15,19 @@ class ProductController extends Controller
     {;
         $genres = Genre::all();
         $genresProducts = Genre_product::all();
+        $userId = auth()->id();
+
+        if($productId){
+            $selectedProduct = Product::with('genres')
+                ->withExists(['favorites as is_favorite' => function($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }])
+                ->withExists(['baskets as is_basket' => function($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }])
+                ->findOrFail($productId);
+        }
+
         
         return Inertia::render('Index',[
             'products' => Product::with('favorites')->get()->map(function ($product) {
@@ -32,7 +45,7 @@ class ProductController extends Controller
             // 'products' => $products,
             'genres'=> $genres,
             'genresProducts' => $genresProducts,
-            'selectedProduct' => $productId ? Product::find($productId) : null,
+            'selectedProduct' => $productId ? $selectedProduct : null,
         ]);
     }
 }
