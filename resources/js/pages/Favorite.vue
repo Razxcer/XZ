@@ -1,18 +1,51 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import HeadComp from './components/HeadComp.vue';
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useUserStore } from '../stores/userStore';
 
 const props = defineProps({
     favorites: Array
 })
 
-const gamesHave=ref()
-const gamesLen = props.favorites.length
+const gamesHave = computed(()=>{
+    let gamesHave
+    if(props.favorites.length%10<=0 || props.favorites.length%10>=5) gamesHave = "игр"
+    else if(props.favorites.length%10==1) gamesHave = "игра"
+    else gamesHave= "игры"
+    return gamesHave
+})
 
-if(gamesLen%10<=0 || gamesLen%10>=5) gamesHave.value = "игр"
-else if(gamesLen%10==1) gamesHave.value = "игра"
-else gamesHave.value = "игры"
+const toggleFavorite = (productId) => {
+        if(useUserStore().user)
+        {
+            router.post("/product/"+ productId + '/toggle-favorite', {}, {
+                preserveScroll: true, // Страница останется на том же месте
+                onSuccess: () => {
+                    products.value.find(product => product.id == productId).is_favorite = !products.value.find(product => product.id == productId).is_favorite
+                }
+            })
+        }
+        else{
+            alert("У вас есть аккаунт? авторизуйтесь если так, иначе зарегистрируйтесь")
+        }
+    }
+
+    //Корзина
+    const toggleBasket = (productId) => {
+        if(useUserStore().user)
+        {
+            router.post("/product/"+ productId + '/toggle-basket', {}, {
+                preserveScroll: true, // Страница останется на том же месте
+                onSuccess: () => {
+                    products.value.find(product => product.id == productId).in_basket = !products.value.find(product => product.id == productId).in_basket
+                }
+            })
+        }
+        else{
+            alert("У вас есть аккаунт? авторизуйтесь если так, иначе зарегистрируйтесь")
+        }
+    }
 
 
 
@@ -36,18 +69,15 @@ else gamesHave.value = "игры"
                         </svg>
                     </div>
                     <div class="favorites card-button" :class="{'is-favorite': product.is_favorite}">
-                        <svg @click="toggleFavorite(product.id)" xmlns="http://www.w3.org/2000/svg" class="bi bi-heart-fill" viewBox="-0.5 -1 17 17">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart-fill" viewBox="-0.5 -1 17 17">
                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                         </svg>
                     </div>
                     <p class="name-game">{{ product.title }}</p>
                     <div class="priceAndBuy">
                         <p class="price">{{product.price}} руб</p>
-                        <button class="buy" @click="buyProduct">
-                            <p>Купить</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
-                                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-                            </svg>
+                        <button class="buy" @click="toggleFavorite(product.id)">
+                            <p>Удалить</p>
                         </button>
                     </div>                  
                 </li>
@@ -156,7 +186,7 @@ else gamesHave.value = "игры"
     border: none;
     border-radius: 1.5em;
     font-size: 20px;
-    background-color: var(--fourth-color);
+    background-color: color-mix(in srgb, #880808, transparent 50%);
     color: var(--first-color);
     font-family:Arial, Helvetica, sans-serif;
     display: flex;

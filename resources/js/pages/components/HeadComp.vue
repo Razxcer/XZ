@@ -303,7 +303,9 @@
     }
 }
 
-
+.profile>a{
+    width: 80px;
+}
 
 
 

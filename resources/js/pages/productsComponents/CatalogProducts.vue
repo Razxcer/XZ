@@ -124,7 +124,7 @@ import BuyMoment from './BuyMoment.vue';
 
     <div class="wrap">
 
-        <BuyMoment v-if="buyModal" @buy-close="buyClose"/>
+        <BuyMoment v-if="buyModal" @buy-close="buyClose" class="buy-modal"/>
 
         <AboutGameModal class="about-game" 
         :product="props.selectedProduct" 
@@ -356,5 +356,9 @@ import BuyMoment from './BuyMoment.vue';
     opacity: 0.8;
 }
 
+.buy-modal{
+    left: calc(calc(100vw - -50px) / 2);
+    top: 200px;
+}
 
 </style>

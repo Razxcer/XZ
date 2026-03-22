@@ -32,7 +32,6 @@ const buyClose=()=>{
     buyModal.value=false
 }
 
-console.log(props.product)
 
 </script>
 
