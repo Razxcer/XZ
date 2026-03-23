@@ -15,11 +15,15 @@ import { ref, computed, onMounted, watch } from 'vue';
   });
 
   const filter = ref({})
+  const searchText=ref(null)
 
   const updateFilter=(payload)=>{
     filter.value = payload
   }
 
+  const searchItem=(payload)=>{
+    searchText.value = payload
+  }
 
 
 </script>
@@ -30,7 +34,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 
     <Head title="Главная страница" />
 
-    <HeadComp />
+    <HeadComp @search="searchItem"/>
 
     <Filters 
     :products="props.products" 
@@ -39,6 +43,7 @@ import { ref, computed, onMounted, watch } from 'vue';
     class="left-menu" />
 
     <Catalog 
+    :searchText="searchText"
     :products="props.products" 
     :filter="filter" 
     :genresProducts="props.genresProducts" 

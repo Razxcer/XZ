@@ -10,6 +10,9 @@
     const page = usePage();
     const userStore = useUserStore();
     const user = ref()
+    const searchText=ref()
+
+    const emit = defineEmits(['search'])
 
     const syncUser = () => {
         const auth = page.props.auth;
@@ -45,9 +48,9 @@
         }
     }
 
-
-
-
+    watch(searchText,()=>{
+        emit('search', searchText.value.toLowerCase())  
+    })
 
 
 
@@ -79,7 +82,7 @@
         </div>
 
         <div class="search-panel">
-            <input type="text" name="search" id="search" class="search" placeholder="Поиск"/>
+            <input v-model="searchText" type="text" name="search" id="search" class="search" placeholder="Поиск"/>
         </div>
 
         <div class="head-icons-panel">

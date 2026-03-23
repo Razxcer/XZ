@@ -10,7 +10,8 @@ import BuyMoment from './BuyMoment.vue';
         products: Array,
         filter: Object,
         genresProducts: Array,
-        selectedProduct: Object
+        selectedProduct: Object,
+        searchText: String
     });
 
     const products = ref(props.products)
@@ -37,8 +38,17 @@ import BuyMoment from './BuyMoment.vue';
         return temp
     })
 
+    const secondTimesFiltredArray=computed(()=>{
+        if(props.searchText){
+            return filtredArray.value.filter(game => game.title.toLowerCase().includes(props.searchText))  
+        }
+        else{
+            return filtredArray.value
+        }
+    })
+
     const groupedByLevel = computed(() => {
-        return filtredArray.value.reduce((acc, item) => {
+        return secondTimesFiltredArray.value.reduce((acc, item) => {
         if (!acc[item.level]) acc[item.level] = [];
         acc[item.level].push(item);
         return acc;
@@ -52,6 +62,7 @@ import BuyMoment from './BuyMoment.vue';
         .sort((a, b) => b - a); // b - a дает обратный порядок (от большего к меньшему)
         
     });
+
 
     
 
@@ -88,10 +99,6 @@ import BuyMoment from './BuyMoment.vue';
     }
 
 
-    //Кнопка купить
-    const buyProduct=()=>{
-        console.log(props.selectedProduct)
-    }
 
     //Открытый в избранное
     const selectedInFavorite=(payload)=>{
@@ -108,6 +115,7 @@ import BuyMoment from './BuyMoment.vue';
         router.visit('/products', { preserveScroll: true });
     }
 
+    //Кнопка купить
     const buyOpen=()=>{
         buyModal.value=true
     }
