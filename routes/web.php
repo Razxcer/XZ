@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BasketController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -22,7 +23,8 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 //Профиль
 
-Route::get('/profile', [MainController::class, 'showProfile']);
+Route::middleware(['auth'])->get('/profile', [SaleController::class, 'index']);
+Route::middleware(['auth'])->post('/product/{product}/buy-detach', [SaleController::class, 'detach']);
 
 //Избранное
 Route::middleware(['auth'])->get('/favorite', [FavoriteController::class, 'index']);

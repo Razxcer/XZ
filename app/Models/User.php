@@ -56,4 +56,8 @@ class User extends Authenticatable
     public function baskets() {
         return $this->belongsToMany(Product::class, 'baskets');
     }
+
+    public function sales() {
+        return $this->belongsToMany(Product::class, 'sales');
+    }
 }

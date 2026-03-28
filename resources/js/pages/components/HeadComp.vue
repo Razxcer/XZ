@@ -126,8 +126,6 @@
                 </Link>
             
                 <div class="dropdown-content"> 
-                    <Link v-if="user" class="link">Покупки</Link>  
-                    <Link class="link">Настройки</Link>  
                     <Link v-if="user" @click="quit" class="link">Выйти</Link>
                 </div>
             </div>
