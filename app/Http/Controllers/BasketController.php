@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Basket;
 use App\Models\Product;
+use App\Models\Sale;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,7 +20,8 @@ class BasketController extends Controller
         });
 
         return Inertia::render('Basket', [
-            'basket' => $basket
+            'basket' => $basket,
+            'user'=> auth()->user()
         ]);
     }
 
@@ -26,4 +30,32 @@ class BasketController extends Controller
         auth()->user()->baskets()->toggle($product -> id);
         return back(); // Inertia обновит данные на фронте без перезагрузки
     }
+
+    public function updateDiscount(Request $request, User $user) {
+
+        $validated = $request->validate([
+            'discount' => 'required|integer|min:0|max:100',
+        ]);
+
+        $user->update($validated);
+
+        return back();
+    }
+
+    public function clear() {
+        Basket::where('user_id', auth()->id())->delete();
+    }
+
+    public function buyAll(Request $request) {
+
+        $user = auth()->user();
+
+        $user->sales()->syncWithoutDetaching($request->products);
+
+        return back();
+
+    }
+
+
+
 }

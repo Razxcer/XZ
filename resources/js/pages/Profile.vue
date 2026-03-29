@@ -10,7 +10,6 @@ const props = defineProps({
 
 const admin=ref(props.admin)
 
-console.log(props.sales)
 
 const totalPrice=ref(0)
 const preTotalPrice=ref("")
@@ -31,7 +30,6 @@ const groupedData = computed(() => {
     return Object.groupBy(props.sales, (item) => item.user_id);
 });
 
-console.log(groupedData.value)
 
 
 

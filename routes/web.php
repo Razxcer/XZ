@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BasketController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
@@ -33,9 +34,13 @@ Route::middleware(['auth'])->post('/product/{product}/toggle-favorite', [Favorit
 //Корзина
 Route::middleware(['auth'])->get('/basket', [BasketController::class, 'index']);
 Route::middleware(['auth'])->post('/product/{product}/toggle-basket', [BasketController::class, 'toggle']);
+Route::middleware(['auth'])->delete('/basket/{user}/clear', [BasketController::class, 'clear']);
+Route::middleware(['auth'])->post('/basket/{user}/buyAll', [BasketController::class, 'buyAll']);
 
 
-
+//Игра
+Route::middleware(['auth'])->get('/games/kubiki', [GameController::class, 'kubiki']);
+Route::patch('/user/{user}/update-discount', [BasketController::class, 'updateDiscount']);
 
 
 

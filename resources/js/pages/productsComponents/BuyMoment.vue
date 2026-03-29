@@ -14,7 +14,7 @@ const close=()=>{
 <template>
 
 <div class="wrap">
-    <p>Если бы это был реальный сайт, то тут бы был QR-код ツ</p>
+    <p>Данные по дальнейшим действиям у вас на почте ツ</p>
     
 
     <button @click="close">Закрыть</button>
@@ -30,7 +30,7 @@ const close=()=>{
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    position: absolute;
+    position: fixed;
     width: 300px;
     height: 300px;
     background-color: var(--bg-surface);
@@ -41,10 +41,16 @@ const close=()=>{
 button{
     width: 70%;
     height: 50px;
+    margin-top: 70px;
+    background-color: var(--bg-main);
+    border-radius: 10px;
 }
 
 p{
+    margin-top: 20px;
     width: 80%;
+    font-size: 20px;
+    text-align: center;
 }
 
 </style>

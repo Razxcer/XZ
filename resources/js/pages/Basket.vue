@@ -5,14 +5,34 @@ import { computed, ref } from 'vue'
 import BuyMoment from './productsComponents/BuyMoment.vue';
 import { useUserStore } from '../stores/userStore';
 
+//Pinia userStore.js
+const userStore = useUserStore();
 const props = defineProps({
-    basket: Array
+    basket: Array,
+    user: Object
 })
 
+const totalPriceWithDiscount=ref(null)
+const totalPrice=computed(()=>{
+    return props.basket.reduce((sum, item) => sum + item.price, 0)
+})
 
-const totalPrice=ref(0)
-
-totalPrice.value = props.basket.reduce((sum, item) => sum + item.price, 0)
+if(!userStore.discount){
+    props.user.discount==0 ? totalPriceWithDiscount.value = null : totalPriceWithDiscount.value = totalPrice.value * ((100 - props.user.discount)/100);
+}
+else if(userStore.discount>props.user.discount){
+    router.patch('/user/'+props.user.id+'/update-discount', {
+        discount: Number(userStore.discount),
+    },
+    {
+        preserveScroll: true, // страница не дернется вверх после обновления
+    });
+    
+    totalPriceWithDiscount.value = totalPrice.value * ((100 - userStore.discount)/100);
+}
+else{
+    props.user.discount==0?totalPriceWithDiscount.value = null : totalPriceWithDiscount.value = totalPrice.value * ((100 - props.user.discount)/100);
+}
 
 const gamesHave = computed(()=>{
     let gamesHave
@@ -24,7 +44,7 @@ const gamesHave = computed(()=>{
 
 
 const toggleFavorite = (productId) => {
-        if(useUserStore().user)
+        if(userStore.user)
         {
             router.post("/product/"+ productId + '/toggle-favorite', {}, {
                 preserveScroll: true, // Страница останется на том же месте
@@ -40,7 +60,7 @@ const toggleFavorite = (productId) => {
 
     //Корзина
     const toggleBasket = (productId) => {
-        if(useUserStore().user)
+        if(userStore.user)
         {
             router.post("/product/"+ productId + '/toggle-basket', {}, {
                 preserveScroll: true, // Страница останется на том же месте
@@ -58,7 +78,41 @@ const toggleFavorite = (productId) => {
 const buyModal=ref(false)
 
 const buyOpen=()=>{
-    buyModal.value=true
+    userStore.setUserDiscount(null)
+    totalPriceWithDiscount.value=null
+
+    let productsIdForBuy = []
+    props.basket.map((prod)=>{
+        productsIdForBuy.push(prod.id)
+    })
+    
+    router.post('/basket/'+props.user.id+'/buyAll', {
+            
+        products: productsIdForBuy,
+        
+    },
+    {
+        preserveScroll: true, // страница не дернется вверх после обновления
+        onSuccess: () => {
+            router.delete('/basket/'+props.user.id+'/clear', {},
+            {
+                preserveScroll: true, // страница не дернется вверх после обновления
+                onSuccess: () => {
+                    router.patch('/user/'+props.user.id+'/update-discount', {
+                        discount: Number(0),
+                    },
+                    {
+                        preserveScroll: true, // страница не дернется вверх после обновления
+                        onSuccess: () => {
+                            buyModal.value=true
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    
 }
 
 const buyClose=()=>{
@@ -74,7 +128,14 @@ const buyClose=()=>{
     <div class="wrap">
         <HeadComp />
         <BuyMoment v-if="buyModal" @buy-close="buyClose" class="buy-modal"/>
-        <div class="you-have">У вас в корзине {{ props.basket.length }} {{gamesHave}}:</div>
+        <div class="you-have">
+            <p>У вас в корзине {{ props.basket.length }} {{gamesHave}}:</p>
+            <div>
+                <p>Нужна скидка?</p>
+                <Link href="/games/kubiki" > Испытай себя!</Link>
+            </div>
+            
+        </div>
 
         <ul class="catalog">
             <li class="catalog-element" v-for="product in props.basket" >
@@ -101,7 +162,14 @@ const buyClose=()=>{
                 </li>
         </ul>
         <div class="total">
-            <p>Цена всех товаров в корзине: {{ totalPrice }}</p>
+            <div>
+                <p>Цена всех товаров в корзине: </p>
+                <p v-if="totalPriceWithDiscount" class="new-price">{{ Math.round(totalPriceWithDiscount) }} ₽</p>
+                <p :class="{'old-price' : totalPriceWithDiscount}">{{ totalPrice }} ₽</p>
+                <p v-if="totalPriceWithDiscount && props.user.discount>=userStore.discount" class="discount">Скидка: {{ props.user.discount }}%</p>
+                <p v-if="totalPriceWithDiscount && props.user.discount<userStore.discount" class="discount">Скидка: {{ userStore.discount }}%</p>
+            </div>
+            
             <button @click="buyOpen">Купить всё</button>
         </div>
     </div>
@@ -125,13 +193,28 @@ const buyClose=()=>{
     background-color: color-mix(in srgb, var(--bg-surface), transparent 10%);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     top: calc(100vh - 60px);
 }
 
-.total>p{
-    width: 90%;
+.total>div{
+    display: flex;
+    gap: 5px;
+    margin-left: 70px;
+}
+
+.total p{
     font-size: 20px;
-    padding-left: 20px;
+}
+
+.total .old-price{
+    color: #880808;
+    font-size: 15px;
+}
+
+.total .new-price{
+    color: var(--clr-accent);
+    font-weight: 500;
 }
 
 .total>button{
@@ -140,6 +223,7 @@ const buyClose=()=>{
     border-radius: 0.5em;
     transition: 0.2s;
     font-size: 20px;
+    margin-right: 50px;
 }
 
 .total>button:hover{
@@ -147,6 +231,10 @@ const buyClose=()=>{
     transition: 0.2s;
 }
 
+.total .discount{
+    margin-left: 20px;
+    color: var(--clr-accent-dark);
+}
 
 .you-have{
     width: 100%;
@@ -156,6 +244,17 @@ const buyClose=()=>{
     margin-bottom: 30px;
     color: var(--clr-accent);
     font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+}
+
+.you-have>div{
+    display: flex;
+    margin-right: 30px;
+}
+
+.you-have>a{
+    margin-right: 30px;
 }
 
 

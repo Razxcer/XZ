@@ -377,7 +377,7 @@ import BuyMoment from './BuyMoment.vue';
 }
 
 .buy-modal{
-    left: calc(calc(100vw - -50px) / 2);
+    left: calc(calc(100vw - 300px) / 2);
     top: 200px;
 }
 

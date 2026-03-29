@@ -3,7 +3,8 @@ import { defineStore } from 'pinia';
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
-    favoritesCount: 0
+    favoritesCount: 0,
+    discount: null
   }),
   actions: {
     //Имя
@@ -14,6 +15,11 @@ export const useUserStore = defineStore('user', {
     //Избранное
     setUserFavorites(count){
       this.favoritesCount = count;
+    },
+
+    //Скидка
+    setUserDiscount(procent){
+      this.discount = procent;
     },
 
 
