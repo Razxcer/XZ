@@ -1,7 +1,11 @@
 <script setup>
 import '../../../css/app.css'
 import {ref, defineProps} from 'vue'
+import { router } from '@inertiajs/vue3'
 import BuyMoment from './BuyMoment.vue'
+import { useUserStore } from '../../stores/userStore'
+
+const userStore = useUserStore()
 
 const props = defineProps({
     product: Object,
@@ -24,13 +28,19 @@ const inBasket=()=>{
 
 const buyModal=ref(false)
 
-const buyOpen=()=>{
-    buyModal.value=true
+const buy=()=>{
+    console.log("Отправляю")
+    alert("Дальнейшая информация на почте")
+
+    router.post('/sendToEmail', {
+        email: userStore.user.email,
+        name: userStore.user.name
+    },
+    {
+        preserveScroll: true, // страница не дернется вверх после обновления
+    });
 }
 
-const buyClose=()=>{
-    buyModal.value=false
-}
 
 
 </script>
@@ -60,7 +70,7 @@ const buyClose=()=>{
                 <img :src="product.imageURL" :alt="product.title" class="game-image" />
                 <div class="price-section">
                     <span class="price">{{ product.price }} ₽</span>
-                    <button @click="buyOpen" class="buy-button">Купить моментально</button>
+                    <button @click="buy" class="buy-button">Купить моментально</button>
                 </div>
                 </div>
 

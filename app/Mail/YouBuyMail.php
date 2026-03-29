@@ -16,9 +16,12 @@ class YouBuyMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+
+    public $userName;
+
+    public function __construct($name)
     {
-        //
+        $this->userName = $name;
     }
 
     /**
@@ -27,7 +30,7 @@ class YouBuyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'You Buy Mail',
+            subject: 'Вы совершили покупку на сайте XZ',
         );
     }
 
@@ -37,7 +40,7 @@ class YouBuyMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.youBuy',
         );
     }
 

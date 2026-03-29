@@ -77,9 +77,20 @@ const toggleFavorite = (productId) => {
 
 const buyModal=ref(false)
 
-const buyOpen=()=>{
+const buy=()=>{
     userStore.setUserDiscount(null)
     totalPriceWithDiscount.value=null
+
+    console.log("Отправляю")
+    alert("Дальнейшая информация на почте")
+
+    router.post('/sendToEmail', {
+        email: userStore.user.email,
+        name: userStore.user.name
+    },
+    {
+        preserveScroll: true, // страница не дернется вверх после обновления
+    });
 
     let productsIdForBuy = []
     props.basket.map((prod)=>{
@@ -93,30 +104,21 @@ const buyOpen=()=>{
     },
     {
         preserveScroll: true, // страница не дернется вверх после обновления
-        onSuccess: () => {
-            router.delete('/basket/'+props.user.id+'/clear', {},
-            {
-                preserveScroll: true, // страница не дернется вверх после обновления
-                onSuccess: () => {
-                    router.patch('/user/'+props.user.id+'/update-discount', {
-                        discount: Number(0),
-                    },
-                    {
-                        preserveScroll: true, // страница не дернется вверх после обновления
-                        onSuccess: () => {
-                            buyModal.value=true
-                        }
-                    });
-                }
-            });
-        }
+    });
+
+    router.patch('/user/'+props.user.id+'/update-discount', {
+        discount: Number(0),
+    },
+    {
+        preserveScroll: true, // страница не дернется вверх после обновления
+    });
+
+    router.delete('/basket/'+props.user.id+'/clear', {},
+    {
+        preserveScroll: true, // страница не дернется вверх после обновления
     });
 
     
-}
-
-const buyClose=()=>{
-    buyModal.value=false
 }
 
 
@@ -170,7 +172,7 @@ const buyClose=()=>{
                 <p v-if="totalPriceWithDiscount && props.user.discount<userStore.discount" class="discount">Скидка: {{ userStore.discount }}%</p>
             </div>
             
-            <button @click="buyOpen">Купить всё</button>
+            <button @click="buy">Купить всё</button>
         </div>
     </div>
 </template>

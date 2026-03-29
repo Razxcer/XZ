@@ -1,11 +1,28 @@
 <script setup>
 import { ref, defineEmits } from 'vue';
+import { useUserStore } from '../../stores/userStore';
+
+//Pinia userStore.js
+const userStore = useUserStore();
 
 const emit = defineEmits(['buy-close'])
 
 const close=()=>{
     emit('buy-close')
 }
+
+console.log("Отправляю")
+alert("Дальнейшая информация на почте")
+router.post('/sendToEmail', {
+    email: userStore.user.email,
+    name: userStore.user.name
+},
+{
+    preserveScroll: true, // страница не дернется вверх после обновления
+});
+
+
+
 
 
 </script>
