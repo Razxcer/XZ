@@ -236,6 +236,7 @@ import BuyMoment from './BuyMoment.vue';
     padding-bottom: 15px;
     opacity: 0.8;
     font-size: 17.5px;
+    color: var(--clr-text);
 }
 
 .catalog-element{

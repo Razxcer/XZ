@@ -88,6 +88,7 @@ const groupedData = computed(() => {
     text-indent: 20px;
     margin-top: 10px;
     margin-bottom: 20px;
+    color: var(--clr-text);
 }
 
 .catalog{
@@ -148,6 +149,7 @@ const groupedData = computed(() => {
 .product-title{
     width: 300px;
     font-size: 18px;
+    color: var(--clr-text);
 }
 
 .product-price{
@@ -164,6 +166,7 @@ const groupedData = computed(() => {
 }
 
 .total-product-title{
+    color: var(--clr-text);
     width: 300px;
     font-size: 18px;
 }

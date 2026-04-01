@@ -66,7 +66,7 @@ const submitLogIn=()=>{
     opacity: 0.97;
     background-color: var(--first-color);
     border-radius: 1.5em;
-    box-shadow:0px 0px 10px;
+    box-shadow:0px 0px 10px var(--clr-text);
     flex-wrap: wrap;    
 }
 

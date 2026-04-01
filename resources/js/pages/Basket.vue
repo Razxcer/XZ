@@ -165,14 +165,14 @@ const buy=()=>{
         </ul>
         <div class="total">
             <div>
-                <p>Цена всех товаров в корзине: </p>
+                <p style="color: var(--clr-text);" >Цена всех товаров в корзине: </p>
                 <p v-if="totalPriceWithDiscount" class="new-price">{{ Math.round(totalPriceWithDiscount) }} ₽</p>
                 <p :class="{'old-price' : totalPriceWithDiscount}">{{ totalPrice }} ₽</p>
                 <p v-if="totalPriceWithDiscount && props.user.discount>=userStore.discount" class="discount">Скидка: {{ props.user.discount }}%</p>
                 <p v-if="totalPriceWithDiscount && props.user.discount<userStore.discount" class="discount">Скидка: {{ userStore.discount }}%</p>
             </div>
             
-            <button @click="buy">Купить всё</button>
+            <button class="buyAll" @click="buy">Купить всё</button>
         </div>
     </div>
 </template>
@@ -409,6 +409,10 @@ const buy=()=>{
     top: 200px;
     width: 300px;
     height: 300px;
+}
+
+.buyAll{
+    color:var(--clr-text);
 }
 
 

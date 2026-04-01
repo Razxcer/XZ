@@ -148,6 +148,7 @@ const buy=()=>{
     font-size: 25px;
     font-weight: 600;
     text-align: center;
+    color: var(--clr-text);
 }
 
 .actions{

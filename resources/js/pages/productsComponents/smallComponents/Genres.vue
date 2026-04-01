@@ -46,6 +46,7 @@ li{
     width: min-content;
     border-radius: 1em;
     user-select: none;
+    color: var(--clr-text);
 }
 
 

@@ -408,10 +408,15 @@ onMounted(()=>{
     gap: 200px;
   }
 
+  .score p{
+    color: var(--clr-text);
+  }
+
   .back{
     position: absolute;
     font-size: 20px;
-    left: 40px
+    left: 40px;
+    color: var(--clr-text);
   }
 
 .game{
